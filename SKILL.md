@@ -273,3 +273,5 @@ poster-studio/
 ```
 
 安装位置：`~/.dsh/skills/poster-studio/`（用户级 skill）。复制 `assets/template-*.html` 时连同其内联导出模块一起带走，模板本身即是成品工程。五个模板都内置 §7 的群二维码尾块与问卷条（`qrGroups`），不需要额外引入文件。
+
+公开仓库：<https://github.com/MakeBlackSheepGreat/poster-studio>（MIT）。模板里的机构名、地点、二维码都是占位内容（`XX 大学 XX 协会`、`教学楼 101`、`data:image/png;base64,...`），发布前替换成自己的；二维码默认渲染占位图形，填真实 data URI 才会出真码。
