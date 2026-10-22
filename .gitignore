@@ -1,0 +1,17 @@
+# 导出产物
+*.jpg
+*.png
+!docs/*.jpg
+!docs/*.png
+
+# 临时目录
+.tmp*/
+_qc/
+_render/
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+*.TMP
+.*.tmpdir
+node_modules/

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>模板三 · 卖点对话框型 1080×1496</title>
+<style>
+/* ============ 设计 token（见 DESIGN-LANGUAGE.md） ============ */
+:root{
+  --blue:#2E7DF6; --red:#F5401C; --orange:#FF8A1E; --yellow:#FFC53D;
+  --yellow-soft:#FFE9A8; --ink:#1A1D24; --gray:#5A6270; --line:#D9DEE7;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:#EDEFF3;}
+body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Source Han Sans SC",sans-serif;}
+#stage-wrap{display:flex;justify-content:center;padding:30px;}
+#stage{transform-origin:top center;}
+#poster{width:1080px;min-height:1496px;background:#fff;position:relative;
+  display:flex;flex-direction:column;align-items:center;
+  padding:60px 72px 44px;overflow:hidden;}
+
+/* 工具条（不出现在导出图里） */
+#toolbar{position:fixed;top:12px;right:16px;z-index:99;display:flex;gap:8px;}
+#toolbar button{border:0;border-radius:999px;padding:10px 22px;font-size:15px;font-weight:700;
+  background:var(--blue);color:#fff;cursor:pointer;}
+#toolbar span{align-self:center;font-size:13px;color:#666;}
+
+/* ============ 品牌区 ============ */
+.brand-row{position:relative;width:100%;display:flex;justify-content:center;gap:22px;margin-bottom:18px;}
+.brand-block{width:170px;height:170px;}
+.brand-block svg{width:170px;height:170px;display:block;}
+.bubble{position:absolute;border-radius:18px;font-family:Arial,sans-serif;font-weight:900;
+  color:#fff;display:flex;align-items:center;justify-content:center;}
+.bubble.b1{width:88px;height:64px;font-size:30px;top:-6px;left:calc(50% - 320px);background:var(--orange);}
+.bubble.b2{width:72px;height:64px;font-size:30px;top:-6px;left:calc(50% + 250px);background:var(--yellow);color:var(--ink);}
+
+/* ============ 标题 ============ */
+.title{width:100%;text-align:center;font-size:52px;font-weight:900;color:var(--ink);
+  letter-spacing:2px;white-space:nowrap;margin:2px 0 24px;}
+.org{width:100%;text-align:center;font-size:24px;font-weight:600;color:var(--gray);
+  letter-spacing:4px;white-space:nowrap;margin-bottom:2px;}
+
+/* ============ 对话气泡主体 ============ */
+.bubble-main{position:relative;width:100%;flex:1;background:#fff;
+  border:8px solid var(--line,#D9DEE7);border-radius:64px;
+  padding:60px 56px 36px;display:flex;flex-direction:column;overflow:visible;}
+.sp-line{width:100%;font-size:60px;line-height:1.5;font-weight:800;color:var(--ink);
+  white-space:nowrap;margin-bottom:8px;}
+.sp-line.big{font-size:64px;font-weight:900;margin:6px 0 10px;}
+.sp-line .hl{color:var(--blue);}
+.sp-mascot{width:420px;height:340px;margin-top:auto;}
+.sp-mascot svg{width:100%;height:100%;display:block;}
+/* 气泡尾巴：白三角遮住气泡边线 + 两条描边构成尾巴 */
+.tail{position:absolute;right:110px;bottom:-92px;width:220px;height:110px;}
+.tail-l{position:absolute;left:110px;bottom:-92px;width:220px;height:110px;transform:scaleX(-1);}
+
+/* ============ 落款 ============ */
+.footer{margin-top:112px;width:100%;text-align:center;font-size:25px;color:var(--gray);
+  line-height:1.5;font-weight:500;}
+
+/* ============ 双群二维码尾块（cfg.qrGroups 驱动） ============ */
+.qg-wrap{margin-top:56px;display:flex;flex-direction:column;align-items:center;}
+.qg-head{font-size:26px;font-weight:900;color:var(--ink);margin-bottom:6px;text-align:center;}
+.qg-sub{font-size:20px;font-weight:500;color:var(--gray);margin-bottom:22px;text-align:center;line-height:1.6;}
+.qg-row{display:flex;gap:22px;align-items:stretch;justify-content:center;flex-wrap:nowrap;}
+.qg-card{background:#fff;border:3px solid var(--line,#D9DEE7);border-radius:20px;padding:18px 16px;display:flex;flex-direction:column;align-items:center;width:300px;}
+.qg-card .qg-img{width:196px;height:196px;display:block;border-radius:8px;}
+.qg-card .qg-ph{display:flex;align-items:center;justify-content:center;background:#EEF1F6;color:#8A93A3;font-size:17px;font-weight:700;text-align:center;}
+.qg-name{font-size:21px;font-weight:900;color:var(--ink);margin-top:12px;text-align:center;}
+.qg-desc{font-size:18px;font-weight:500;color:#333A45;line-height:1.65;margin-top:7px;text-align:center;}
+.qg-tag{font-size:17px;font-weight:800;padding:5px 14px;border-radius:999px;margin-top:10px;}
+.qg-card.c1{border-color:var(--blue);}
+.qg-card.c1 .qg-tag{background:#E3EEFF;color:var(--blue-deep,#1B4FD8);}
+.qg-card.c2{border-color:var(--orange);}
+.qg-card.c2 .qg-tag{background:#FFEEDD;color:#B4560A;}
+.qg-pick{font-size:19px;font-weight:700;color:var(--ink);margin-top:20px;text-align:center;line-height:1.7;background:#FFF6DB;border-radius:14px;padding:12px 22px;}
+.qg-survey{margin-top:22px;display:flex;align-items:center;gap:22px;background:#fff;border:3px solid var(--line,#D9DEE7);border-radius:20px;padding:16px 22px;width:100%;box-sizing:border-box;}
+.qg-survey .qs-img{width:132px;height:132px;display:block;border-radius:8px;flex:0 0 auto;}
+.qg-survey .qs-body{flex:1;min-width:0;}
+.qg-survey .qs-title{font-size:21px;font-weight:900;color:var(--ink);line-height:1.45;}
+.qg-survey .qs-desc{font-size:18px;font-weight:500;color:#333A45;line-height:1.65;margin-top:6px;}
+.qg-survey .qs-tag{display:inline-block;font-size:17px;font-weight:800;padding:4px 13px;border-radius:999px;background:#E3EEFF;color:var(--blue-deep,#1B4FD8);margin-top:9px;}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <span>模板三 · 卖点对话框型 1080×1496</span>
+  <button id="btn-export">导出 JPG</button>
+</div>
+
+<div id="stage-wrap"><div id="stage">
+<div id="poster"></div>
+</div></div>
+
+<script id="config" type="application/json">
+{
+  "brand": {
+    "letters": [
+      "C",
+      "A",
+      "I"
+    ],
+    "colors": [
+      "blue",
+      "red",
+      "orange"
+    ],
+    "bubbles": [
+      "♥",
+      "</>"
+    ]
+  },
+  "org": "XX 大学 XX 协会",
+  "title": "AI 讲座 × AI 会议",
+  "lines": [
+    {
+      "text": "工具学了一堆，动手还是卡？"
+    },
+    {
+      "text": "两个 AI 工具一晚上手",
+      "highlight": "一晚上手",
+      "size": "big"
+    },
+    {
+      "text": "WorkBuddy + Trae 演示"
+    }
+  ],
+  "mascot": "panda-desk",
+  "tail": "right",
+  "footer": "10 月 31 日（周六）16:00–18:00 · 教学楼 101 · 具体教室见 QQ 群消息 · 主办：XX 协会",
+  "exportName": "poster-spotlight",
+  "qrGroups": {
+    "head": "扫码进群 · 群里有活动和 AI 的后续消息",
+    "sub": "两个群作用不同，按自己需要加",
+    "groups": [
+      {
+        "name": "协会活动群",
+        "desc": "领活动证明、接收协会最新通知",
+        "tag": "只领证明就加这个",
+        "seed": 20261031,
+        "image": ""
+      },
+      {
+        "name": "AI 交流群",
+        "desc": "平时聊 AI 内容、看最新前沿消息",
+        "tag": "想一起学 AI 再加这个",
+        "seed": 20261032,
+        "image": ""
+      }
+    ],
+    "pick": "只领证明 → 加协会群就够了；想一起交流学习 AI → 再加第 2 个群",
+    "survey": {
+      "title": "AI 基础与兴趣调研问卷",
+      "desc": "第一次 AI 会议配套问卷，1 分钟填完，帮我们把后面活动的内容排得更对路。",
+      "tag": "扫码填写",
+      "image": ""
+    }
+  }
+}
+</script>
+
+<script>
+/* ================= 工具 ================= */
+var HEX = { blue:"#2E7DF6", "blue-deep":"#1B4FD8", red:"#F5401C", orange:"#FF8A1E",
+            yellow:"#FFC53D", "yellow-soft":"#FFE9A8", ink:"#1A1D24", gray:"#5A6270", line:"#D9DEE7" };
+function el(tag, cls, text){ var n=document.createElement(tag); if(cls) n.className=cls;
+  if(text!=null) n.textContent=text; return n; }
+function svgEl(str){ var d=document.createElement("div"); d.innerHTML=str; return d.firstElementChild; }
+function fitText(node, max, min){ var s=max; node.style.fontSize=s+"px";
+  while(s>min && node.scrollWidth>node.clientWidth+1){ s-=2; node.style.fontSize=s+"px"; }
+  if(s<max){ node.setAttribute("data-fit", max+"\u2192"+s); } else { node.removeAttribute("data-fit"); } }
+
+/* 吉祥物：robot（AI 机器人）/ panda-desk（桌前办公熊猫） */
+function mascotSVG(kind){
+  if(kind==="panda-desk"){
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 356" width="100%" height="100%">'+
+      '<rect x="60" y="330" width="330" height="18" rx="9" fill="#1A1D24"/>'+
+      '<rect x="250" y="240" width="150" height="92" rx="12" fill="#FFC53D" stroke="#1A1D24" stroke-width="9"/>'+
+      '<rect x="310" y="332" width="28" height="26" fill="#1A1D24"/>'+
+      '<rect x="96" y="252" width="86" height="80" rx="18" fill="#FF8A1E" stroke="#1A1D24" stroke-width="9"/>'+
+      '<circle cx="170" cy="176" r="96" fill="#fff" stroke="#1A1D24" stroke-width="10"/>'+
+      '<circle cx="104" cy="112" r="30" fill="#1A1D24"/><circle cx="236" cy="112" r="30" fill="#1A1D24"/>'+
+      '<ellipse cx="136" cy="172" rx="30" ry="34" fill="#1A1D24"/>'+
+      '<ellipse cx="206" cy="172" rx="30" ry="34" fill="#1A1D24"/>'+
+      '<circle cx="142" cy="164" r="11" fill="#fff"/><circle cx="212" cy="164" r="11" fill="#fff"/>'+
+      '<ellipse cx="171" cy="214" rx="13" ry="9" fill="#1A1D24"/>'+
+      '<path d="M150 234 Q171 252 192 234" fill="none" stroke="#1A1D24" stroke-width="8" stroke-linecap="round"/>'+
+      '<rect x="286" y="150" width="46" height="46" rx="12" fill="#2E7DF6"/>'+
+      '<text x="309" y="184" font-family="Arial" font-size="26" font-weight="900" fill="#fff" text-anchor="middle">?</text>'+
+      '</svg>';
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 460" width="100%" height="100%">'+
+    '<rect x="205" y="26" width="10" height="52" rx="5" fill="#1A1D24"/>'+
+    '<circle cx="210" cy="22" r="17" fill="#FFC53D" stroke="#1A1D24" stroke-width="8"/>'+
+    '<rect x="34" y="146" width="30" height="76" rx="15" fill="#2E7DF6" stroke="#1A1D24" stroke-width="9"/>'+
+    '<rect x="376" y="146" width="30" height="76" rx="15" fill="#2E7DF6" stroke="#1A1D24" stroke-width="9"/>'+
+    '<rect x="64" y="66" width="292" height="216" rx="58" fill="#fff" stroke="#1A1D24" stroke-width="11"/>'+
+    '<circle cx="156" cy="160" r="31" fill="#fff" stroke="#1A1D24" stroke-width="9"/>'+
+    '<circle cx="264" cy="160" r="31" fill="#fff" stroke="#1A1D24" stroke-width="9"/>'+
+    '<circle cx="162" cy="166" r="15" fill="#1A1D24"/><circle cx="270" cy="166" r="15" fill="#1A1D24"/>'+
+    '<circle cx="155" cy="158" r="5" fill="#fff"/><circle cx="263" cy="158" r="5" fill="#fff"/>'+
+    '<ellipse cx="112" cy="214" rx="21" ry="13" fill="#FFB3C1"/>'+
+    '<ellipse cx="308" cy="214" rx="21" ry="13" fill="#FFB3C1"/>'+
+    '<path d="M172 212 Q210 250 248 212" fill="none" stroke="#1A1D24" stroke-width="11" stroke-linecap="round"/>'+
+    '<rect x="112" y="302" width="196" height="112" rx="40" fill="#2E7DF6" stroke="#1A1D24" stroke-width="11"/>'+
+    '<text x="210" y="376" font-family="Arial" font-size="52" font-weight="900" fill="#fff" text-anchor="middle">AI</text>'+
+    '<path d="M112 336 L62 300" stroke="#1A1D24" stroke-width="16" stroke-linecap="round"/>'+
+    '<circle cx="52" cy="290" r="25" fill="#fff" stroke="#1A1D24" stroke-width="9"/>'+
+    '<path d="M308 336 L358 372" stroke="#1A1D24" stroke-width="16" stroke-linecap="round"/>'+
+    '<circle cx="368" cy="382" r="25" fill="#fff" stroke="#1A1D24" stroke-width="9"/>'+
+    '</svg>';
+}
+
+/* 品牌字母色块（带表情脸） */
+function brandBlockSVG(letter, colorKey, variant){
+  var c = HEX[colorKey] || colorKey;
+  var face = "";
+  if(variant===0){
+    face = '<circle cx="82" cy="86" r="11" fill="#fff"/><circle cx="138" cy="86" r="11" fill="#fff"/>'+
+           '<path d="M92 116 Q110 132 128 116" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }else if(variant===1){
+    face = '<path d="M68 90 Q82 74 96 90" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>'+
+           '<path d="M124 90 Q138 74 152 90" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>'+
+           '<path d="M92 116 Q110 134 128 116" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }else{
+    face = '<path d="M66 82 L94 94 L66 106" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>'+
+           '<path d="M154 82 L126 94 L154 106" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>'+
+           '<path d="M96 120 L124 120" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220">'+
+    '<rect width="220" height="220" rx="46" fill="'+c+'"/>'+face+
+    '<text x="110" y="196" font-family="Arial" font-size="76" font-weight="900" fill="#fff" text-anchor="middle">'+letter+'</text>'+
+    '</svg>';
+}
+
+/* ================= 渲染 ================= */
+var CFG = JSON.parse(document.getElementById("config").textContent);
+
+/* ================= 双群二维码尾块（cfg.qrGroups） ================= */
+function qrGroupSection(g){
+  if(!g || !g.groups || !g.groups.length) return null;
+  var wrap=el("div","qg-wrap");
+  if(g.head) wrap.appendChild(el("div","qg-head",g.head));
+  if(g.sub) wrap.appendChild(el("div","qg-sub",g.sub));
+  var row=el("div","qg-row");
+  g.groups.forEach(function(item,i){
+    var card=el("div","qg-card "+(i===0?"c1":"c2"));
+    if(item.image){
+      var im=document.createElement("img"); im.className="qg-img"; im.src=item.image; card.appendChild(im);
+    }else if(typeof qrSVG==="function"){
+      var q=svgEl(qrSVG((item.seed||20261031),196)); q.setAttribute("class","qg-img"); card.appendChild(q);
+    }else{
+      var ph=el("div","qg-img qg-ph","二维码占位"); card.appendChild(ph);
+    }
+    card.appendChild(el("div","qg-name",item.name||""));
+    if(item.desc) card.appendChild(el("div","qg-desc",item.desc));
+    if(item.tag) card.appendChild(el("div","qg-tag",item.tag));
+    row.appendChild(card);
+  });
+  wrap.appendChild(row);
+  if(g.pick) wrap.appendChild(el("div","qg-pick",g.pick));
+  if(g.survey){
+    var sv=el("div","qg-survey");
+    if(g.survey.image){
+      var sim=document.createElement("img"); sim.className="qs-img"; sim.src=g.survey.image; sv.appendChild(sim);
+    }
+    var sb=el("div","qs-body");
+    if(g.survey.title) sb.appendChild(el("div","qs-title",g.survey.title));
+    if(g.survey.desc) sb.appendChild(el("div","qs-desc",g.survey.desc));
+    if(g.survey.tag) sb.appendChild(el("div","qs-tag",g.survey.tag));
+    sv.appendChild(sb);
+    wrap.appendChild(sv);
+  }
+  return wrap;
+}
+function render(cfg){
+  var poster=document.getElementById("poster");
+  poster.innerHTML="";
+
+  /* 1 品牌区 */
+  var row=el("div","brand-row");
+  (cfg.brand.letters||[]).forEach(function(L,i){
+    var b=el("div","brand-block");
+    b.appendChild(svgEl(brandBlockSVG(L,(cfg.brand.colors||["blue"])[i%(cfg.brand.colors||["blue"]).length],i%3)));
+    row.appendChild(b);
+  });
+  var bs=cfg.brand.bubbles||[];
+  if(bs[0]){ var b1=el("div","bubble b1",bs[0]); row.appendChild(b1); }
+  if(bs[1]){ var b2=el("div","bubble b2",bs[1]); row.appendChild(b2); }
+  poster.appendChild(row);
+
+  /* 2 机构名 + 标题 */
+  if(cfg.org) poster.appendChild(el("div","org",cfg.org));
+  var t=el("div","title",cfg.title);
+  poster.appendChild(t);
+
+  /* 3 对话气泡：痛点问句 / 主张句（关键词蓝） / 收益句 */
+  var bub=el("div","bubble-main");
+  (cfg.lines||[]).forEach(function(item){
+    var line=el("div","sp-line"+(item.size==="big"?" big":""));
+    if(item.highlight && item.text.indexOf(item.highlight)>=0){
+      var parts=item.text.split(item.highlight);
+      line.appendChild(document.createTextNode(parts[0]));
+      var h=el("span","hl",item.highlight); line.appendChild(h);
+      line.appendChild(document.createTextNode(parts.slice(1).join(item.highlight)));
+    }else{
+      line.textContent=item.text;
+    }
+    bub.appendChild(line);
+  });
+  if(cfg.mascot!=="none"){
+    var m=el("div","sp-mascot"); m.appendChild(svgEl(mascotSVG(cfg.mascot||"panda-desk"))); bub.appendChild(m);
+  }
+  poster.appendChild(bub);
+
+  /* 气泡尾巴 */
+  var tailSVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 110" width="220" height="110">'+
+    '<path d="M40 12 L112 102 L184 12 Z" fill="#fff"/>'+
+    '<path d="M40 22 L112 102" stroke="#D9DEE7" stroke-width="8" stroke-linecap="round" fill="none"/>'+
+    '<path d="M112 102 L184 22" stroke="#D9DEE7" stroke-width="8" stroke-linecap="round" fill="none"/>'+
+    '</svg>';
+  var tail=el("div",cfg.tail==="left"?"tail-l":"tail");
+  tail.appendChild(svgEl(tailSVG));
+  bub.appendChild(tail);
+
+  /* 4 落款 */
+  var qg=qrGroupSection(cfg.qrGroups); if(qg) (typeof content!=='undefined' && content && content.appendChild)? content.appendChild(qg) : poster.appendChild(qg);
+  var _ft=(cfg.cta&&typeof cfg.cta==="object"&&cfg.cta.footer)||cfg.footer; /* 落款也可能写在 cta 对象里 */
+ if(_ft) poster.appendChild(el("div","footer",_ft));
+
+  /* 自动缩字号，防止长文案溢出 */
+  fitText(t,52,30);
+  Array.prototype.forEach.call(poster.querySelectorAll(".sp-line:not(.big)"),function(n){ fitText(n,60,36); });
+  Array.prototype.forEach.call(poster.querySelectorAll(".sp-line.big"),function(n){ fitText(n,64,42); });
+}
+
+/* ================= 导出（SVG foreignObject → canvas → JPEG，无外部依赖） ================= */
+function exportJPG(opts){
+  opts=opts||{};
+  var scale=opts.scale||2, quality=opts.quality||0.92,
+      filename=opts.filename||((CFG.exportName||"poster")+".jpg"),
+      returnDataUrl=!!opts.returnDataUrl;
+  var poster=document.getElementById("poster");
+  var w=poster.offsetWidth, h=poster.offsetHeight;
+  var styles=Array.prototype.map.call(document.querySelectorAll("style"),function(s){return s.textContent;}).join("\n");
+  var NS="http://www.w3.org/1999/xhtml";
+  var wrap=document.createElementNS(NS,"div");
+  wrap.setAttribute("xmlns",NS);
+  wrap.setAttribute("style","width:"+w+"px;height:"+h+"px;margin:0;background:#fff;");
+  var st=document.createElementNS(NS,"style"); st.textContent=styles; wrap.appendChild(st);
+  var clone=poster.cloneNode(true);
+  clone.setAttribute("style","transform:none;");
+  wrap.appendChild(clone);
+  var xhtml=new XMLSerializer().serializeToString(wrap);
+  var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'+
+          '<foreignObject x="0" y="0" width="'+w+'" height="'+h+'">'+xhtml+'</foreignObject></svg>';
+  return new Promise(function(resolve,reject){
+    var img=new Image();
+    img.onload=function(){
+      try{
+        var canvas=document.createElement("canvas");
+        canvas.width=w*scale; canvas.height=h*scale;
+        var ctx=canvas.getContext("2d");
+        ctx.fillStyle="#FFFFFF"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.setTransform(scale,0,0,scale,0,0);
+        ctx.drawImage(img,0,0,w,h);
+        var dataUrl=canvas.toDataURL("image/jpeg",quality);
+        if(returnDataUrl){ resolve({ok:true,width:w*scale,height:h*scale,dataUrl:dataUrl,
+          bytes:Math.round((dataUrl.length-dataUrl.indexOf(",")-1)*3/4)}); return; }
+        var a=document.createElement("a");
+        a.href=dataUrl; a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        resolve({ok:true,width:w*scale,height:h*scale,bytes:Math.round((dataUrl.length-dataUrl.indexOf(",")-1)*3/4)});
+      }catch(e){ reject(e); }
+    };
+    img.onerror=function(){ reject(new Error("SVG 栅格化失败：检查是否使用了外链图片/网络字体/CSS filter")); };
+    img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+  });
+}
+
+/* ================= 质检报告 ================= */
+function posterReport(){
+  var p=document.getElementById("poster"), r=p.getBoundingClientRect(), bad=[], shrunk=[];
+  Array.prototype.forEach.call(p.querySelectorAll("*"),function(n){
+    var b=n.getBoundingClientRect();
+    if(b.width===0&&b.height===0) return;
+    var cls=(n.className&&n.className.baseVal!==undefined)?n.className.baseVal:(n.className||"");
+    if(b.right>r.right+1||b.left<r.left-1||b.bottom>r.bottom+1||b.top<r.top-1){
+      bad.push({tag:n.tagName,cls:String(cls),text:(n.textContent||"").trim().slice(0,18)});
+    }
+    if(n.scrollWidth>n.clientWidth+2&&getComputedStyle(n).overflow!=="visible"){
+      bad.push({tag:n.tagName,cls:String(cls),text:"横向溢出:"+(n.textContent||"").trim().slice(0,18)});
+    }
+    if(n.getAttribute&&n.getAttribute("data-fit")){
+      shrunk.push({tag:n.tagName,cls:String(cls),text:(n.textContent||"").trim().slice(0,18),fit:n.getAttribute("data-fit")});
+    }
+  });
+  return {width:p.offsetWidth,height:p.offsetHeight,overflow:bad,shrunk:shrunk};
+}
+
+/* ================= 装配 ================= */
+window.__exportJPG=exportJPG;
+window.__posterReport=posterReport;
+document.getElementById("btn-export").addEventListener("click",function(){ exportJPG(); });
+window.addEventListener("keydown",function(e){
+  if((e.ctrlKey||e.metaKey)&&(e.key==="e"||e.key==="E")){ e.preventDefault(); exportJPG(); }
+});
+function fitStage(){
+  var wrap=document.getElementById("stage-wrap"), stage=document.getElementById("stage");
+  var s=Math.min(1,(window.innerWidth-60)/1080);
+  stage.style.transform="scale("+s+")";
+  wrap.style.height=(1496*s+160)+"px";
+}
+render(CFG);
+fitStage();
+window.addEventListener("resize",fitStage);
+</script>
+</body>
+</html>

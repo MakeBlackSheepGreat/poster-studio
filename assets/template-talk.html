@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>模板五 · 单场介绍图 1080×自动高</title>
+<style>
+:root{
+  --blue:#2E7DF6; --blue-deep:#1B4FD8; --red:#F5401C; --orange:#FF8A1E;
+  --yellow:#FFC53D; --yellow-soft:#FFE9A8; --ink:#1A1D24; --gray:#5A6270;
+  --line:#D9DEE7; --paper:#FFFFFF; --card:#F7F9FC;
+  --font:"PingFang SC","Microsoft YaHei","Noto Sans SC","Source Han Sans SC","Heiti SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:#EEF1F6;font-family:var(--font);}
+#stage-wrap{width:100%;display:flex;justify-content:center;padding:20px 0 120px;}
+#stage{transform-origin:top center;}
+#poster{width:1080px;min-height:1920px;background:var(--paper);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;padding:52px 72px 44px;}
+
+/* ---------- 品牌头 ---------- */
+.brand-row{display:flex;gap:24px;justify-content:center;margin-bottom:18px;}
+.brand-block{width:148px;height:148px;}
+.brand-block svg{width:100%;height:100%;display:block;}
+.org{font-size:25px;font-weight:600;color:var(--gray);letter-spacing:8px;margin-bottom:14px;text-align:center;}
+
+/* ---------- 场次胶囊 ---------- */
+.badge{font-size:33px;font-weight:900;color:#fff;padding:12px 40px;border-radius:999px;
+  margin-bottom:24px;letter-spacing:1px;}
+.badge.blue{background:var(--blue);}
+.badge.red{background:var(--red);}
+.badge.orange{background:var(--orange);color:var(--ink);}
+
+/* ---------- 标题区 ---------- */
+.title{width:100%;font-size:74px;font-weight:900;line-height:1.24;color:var(--ink);
+  text-align:center;letter-spacing:-1px;margin-bottom:16px;}
+.subtitle{width:100%;font-size:34px;font-weight:700;color:var(--gray);line-height:1.5;
+  text-align:center;margin-bottom:26px;}
+
+/* ---------- 时间地点条 ---------- */
+.meta-strip{width:100%;display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:26px;}
+.meta-item{display:inline-flex;align-items:center;gap:10px;background:#F2F2F3;border-radius:16px;
+  padding:12px 24px;font-size:25px;font-weight:800;color:var(--ink);white-space:nowrap;}
+.meta-item .mi{font-size:26px;}
+
+/* ---------- 引导句 ---------- */
+.lead{width:100%;font-size:27px;font-weight:600;color:#333A45;line-height:1.75;text-align:center;
+  margin-bottom:30px;}
+
+/* ---------- 小节标题 ---------- */
+.sec-title{width:100%;display:flex;align-items:center;gap:14px;margin:6px 0 16px;}
+.sec-bar{width:12px;height:38px;border-radius:6px;background:var(--blue);}
+.sec-title .st{font-size:34px;font-weight:900;color:var(--ink);letter-spacing:1px;}
+.sec-title .st-sub{font-size:21px;font-weight:600;color:var(--gray);margin-left:2px;}
+
+/* ---------- 内容要点卡 ---------- */
+.points{width:100%;display:flex;flex-direction:column;gap:16px;margin-bottom:30px;}
+.point{display:flex;gap:16px;align-items:flex-start;background:var(--card);border-radius:20px;
+  padding:20px 24px 20px 20px;border-left:10px solid var(--pc,#2E7DF6);}
+.p-num{flex:0 0 auto;width:46px;height:46px;border-radius:14px;background:var(--pc,#2E7DF6);
+  color:#fff;font-size:24px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.p-body{flex:1;min-width:0;}
+.p-title{font-size:29px;font-weight:900;color:var(--ink);line-height:1.42;}
+.p-desc{font-size:23px;font-weight:500;color:#333A45;line-height:1.68;margin-top:6px;}
+
+/* ---------- 讲者卡 ---------- */
+.speakers{width:100%;display:flex;flex-direction:column;gap:16px;margin-bottom:28px;}
+.sp-card{display:flex;gap:18px;align-items:flex-start;background:#fff;border:3px solid #EEF1F6;
+  border-radius:22px;padding:20px 26px;box-shadow:0 8px 22px rgba(26,29,36,.05);}
+.sp-avatar{flex:0 0 auto;width:64px;height:64px;border-radius:20px;background:var(--sc,#2E7DF6);
+  color:#fff;font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.sp-body{flex:1;min-width:0;}
+.sp-line{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+.sp-name{font-size:30px;font-weight:900;color:var(--ink);}
+.sp-role{font-size:21px;font-weight:600;color:var(--gray);line-height:1.5;}
+.sp-topic{font-size:24px;font-weight:800;color:var(--sc,#2E7DF6);line-height:1.55;margin-top:8px;}
+
+/* ---------- 高亮尾句 ---------- */
+.tail{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  font-size:27px;font-weight:800;line-height:1.7;text-align:center;color:var(--ink);margin-bottom:8px;}
+.tail .mark{flex:0 1 auto;background:linear-gradient(transparent 52%, #FFE9A8 52%);padding:0 3px;}
+
+/* ---------- 单码区 ---------- */
+.qr-one{display:flex;align-items:center;gap:24px;background:#FFF6DB;border-radius:22px;
+  padding:18px 26px;margin-top:26px;width:100%;box-sizing:border-box;}
+.qr-one img,.qr-one svg{width:150px;height:150px;display:block;border-radius:10px;flex:0 0 auto;}
+.qr-one .qo-body{flex:1;min-width:0;}
+.qr-one .qo-title{font-size:26px;font-weight:900;color:var(--ink);line-height:1.45;}
+.qr-one .qo-desc{font-size:21px;font-weight:500;color:#333A45;line-height:1.65;margin-top:6px;}
+
+/* ---------- 双群尾块 ---------- */
+.qg-wrap{margin-top:34px;display:flex;flex-direction:column;align-items:center;width:100%;}
+.qg-head{font-size:26px;font-weight:900;color:var(--ink);margin-bottom:6px;text-align:center;}
+.qg-sub{font-size:20px;font-weight:500;color:var(--gray);margin-bottom:20px;text-align:center;line-height:1.6;}
+.qg-row{display:flex;gap:22px;align-items:stretch;justify-content:center;flex-wrap:nowrap;}
+.qg-card{background:#fff;border:3px solid var(--line,#D9DEE7);border-radius:20px;padding:18px 16px;
+  display:flex;flex-direction:column;align-items:center;width:300px;}
+.qg-card .qg-img{width:196px;height:196px;display:block;border-radius:8px;}
+.qg-card .qg-ph{display:flex;align-items:center;justify-content:center;background:#EEF1F6;
+  color:#8A93A3;font-size:17px;font-weight:700;text-align:center;}
+.qg-name{font-size:21px;font-weight:900;color:var(--ink);margin-top:12px;text-align:center;}
+.qg-desc{font-size:18px;font-weight:500;color:#333A45;line-height:1.65;margin-top:7px;text-align:center;}
+.qg-tag{font-size:17px;font-weight:800;padding:5px 14px;border-radius:999px;margin-top:10px;}
+.qg-card.c1{border-color:var(--blue);}
+.qg-card.c1 .qg-tag{background:#E3EEFF;color:var(--blue-deep,#1B4FD8);}
+.qg-card.c2{border-color:var(--orange);}
+.qg-card.c2 .qg-tag{background:#FFEEDD;color:#B4560A;}
+.qg-pick{font-size:19px;font-weight:700;color:var(--ink);margin-top:18px;text-align:center;line-height:1.7;
+  background:#FFF6DB;border-radius:14px;padding:12px 22px;}
+.qg-survey{margin-top:20px;display:flex;align-items:center;gap:22px;background:#fff;
+  border:3px solid var(--line,#D9DEE7);border-radius:20px;padding:16px 22px;width:100%;box-sizing:border-box;}
+.qg-survey .qs-img{width:132px;height:132px;display:block;border-radius:8px;flex:0 0 auto;}
+.qg-survey .qs-body{flex:1;min-width:0;}
+.qg-survey .qs-title{font-size:21px;font-weight:900;color:var(--ink);line-height:1.45;}
+.qg-survey .qs-desc{font-size:18px;font-weight:500;color:#333A45;line-height:1.65;margin-top:6px;}
+.qg-survey .qs-tag{display:inline-block;font-size:17px;font-weight:800;padding:4px 13px;
+  border-radius:999px;background:#E3EEFF;color:var(--blue-deep,#1B4FD8);margin-top:9px;}
+
+.footer{width:100%;text-align:center;font-size:24px;color:var(--gray);font-weight:500;padding-top:22px;}
+
+/* ---------- 工具栏 ---------- */
+#toolbar{position:fixed;right:22px;top:22px;display:flex;gap:12px;align-items:center;background:#fff;
+  border:2px solid var(--line,#D9DEE7);border-radius:14px;padding:10px 14px;z-index:99;}
+#btn-export{background:var(--blue);color:#fff;border:0;border-radius:999px;padding:10px 22px;
+  font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);}
+#hint{color:var(--gray);font-size:12px;}
+</style>
+</head>
+<body>
+<div id="stage-wrap"><div id="stage"><div id="poster"></div></div></div>
+<div id="toolbar"><button id="btn-export">导出 JPG</button><span id="hint">Ctrl+E · 2× 分辨率</span></div>
+
+<script id="config" type="application/json">
+{
+  "brand": { "letters": ["C","A","I","T"], "colors": ["blue","red","orange","yellow"] },
+  "org": "XX 大学 XX 协会",
+  "badge": "讲座段 · 16:00–16:48",
+  "badgeTone": "blue",
+  "title": "单场活动介绍图标题",
+  "subtitle": "副标题写清这场讲什么、怎么讲",
+  "meta": [
+    { "icon": "⏰", "text": "10 月 31 日 16:00–16:48" },
+    { "icon": "📍", "text": "教学楼 101 教室" },
+    { "icon": "👥", "text": "全校同学都能来" }
+  ],
+  "lead": "一段引导句：说明这场为什么值得来、来了能得到什么。",
+  "pointsTitle": "现场讲什么",
+  "pointsSub": "3~4 条内容要点",
+  "points": [
+    { "title": "要点一标题", "desc": "一句话说清这个要点具体做什么、对同学有什么用。" },
+    { "title": "要点二标题", "desc": "一句话说清这个要点具体做什么、对同学有什么用。" },
+    { "title": "要点三标题", "desc": "一句话说清这个要点具体做什么、对同学有什么用。" }
+  ],
+  "speakersTitle": "谁来分享",
+  "speakersSub": "讲座留空，会议填 3~4 位",
+  "speakers": [],
+  "tail": "一句高亮收尾，告诉同学下一步做什么",
+  "qr": {
+    "seed": 20261031,
+    "title": "扫码进群",
+    "desc": "活动通知、教室号和资料都发在群里"
+  },
+  "footer": "主办：XX 协会 · 全校同学均可参加",
+  "exportName": "poster-talk",
+  "qrGroups": null
+}
+</script>
+
+<script>
+/* ================= 工具 ================= */
+var HEX = { blue:"#2E7DF6", "blue-deep":"#1B4FD8", red:"#F5401C", orange:"#FF8A1E",
+            yellow:"#FFC53D", "yellow-soft":"#FFE9A8", ink:"#1A1D24", gray:"#5A6270", line:"#D9DEE7" };
+var TONES = ["blue","red","orange","yellow"];
+function el(tag, cls, text){ var n=document.createElement(tag); if(cls) n.className=cls;
+  if(text!=null) n.textContent=text; return n; }
+function svgEl(str){ var d=document.createElement("div"); d.innerHTML=str; return d.firstElementChild; }
+function fitText(node, max, min){ var s=max; node.style.fontSize=s+"px";
+  while(s>min && node.scrollWidth>node.clientWidth+1){ s-=2; node.style.fontSize=s+"px"; }
+  if(s<max){ node.setAttribute("data-fit", max+"→"+s); } else { node.removeAttribute("data-fit"); } }
+function rng(seed){ var s=(seed>>>0)||7; return function(){ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+
+/* 占位二维码（发布前替换为真实图片 qr.image） */
+function qrSVG(seed, px){
+  var n=25, r=rng(seed), cells="";
+  function finder(fx,fy){
+    return '<rect x="'+fx+'" y="'+fy+'" width="7" height="7" fill="#1A1D24"/>'+
+           '<rect x="'+(fx+1)+'" y="'+(fy+1)+'" width="5" height="5" fill="#fff"/>'+
+           '<rect x="'+(fx+2)+'" y="'+(fy+2)+'" width="3" height="3" fill="#1A1D24"/>';
+  }
+  function inFinder(x,y){ return (x<8&&y<8)||(x>n-9&&y<8)||(x<8&&y>n-9); }
+  for(var y=0;y<n;y++){ for(var x=0;x<n;x++){
+    if(inFinder(x,y)) continue;
+    if(r()>0.52) cells+='<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="#1A1D24"/>';
+  }}
+  return '<svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" width="'+px+'" height="'+px+'">'+
+    '<rect width="25" height="25" fill="#fff"/>'+cells+finder(0,0)+finder(18,0)+finder(0,18)+'</svg>';
+}
+
+/* 品牌字母色块（带表情脸） */
+function brandBlockSVG(letter, colorKey, variant){
+  var c = HEX[colorKey] || colorKey;
+  var face = "";
+  if(variant===0){
+    face = '<circle cx="82" cy="86" r="11" fill="#fff"/><circle cx="138" cy="86" r="11" fill="#fff"/>'+
+           '<path d="M92 116 Q110 132 128 116" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }else if(variant===1){
+    face = '<path d="M68 90 Q82 74 96 90" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>'+
+           '<path d="M124 90 Q138 74 152 90" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>'+
+           '<path d="M92 116 Q110 134 128 116" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }else{
+    face = '<path d="M66 82 L94 94 L66 106" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>'+
+           '<path d="M154 82 L126 94 L154 106" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>'+
+           '<path d="M96 120 L124 120" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220">'+
+    '<rect width="220" height="220" rx="46" fill="'+c+'"/>'+face+
+    '<text x="110" y="196" font-family="Arial" font-size="76" font-weight="900" fill="#fff" text-anchor="middle">'+letter+'</text>'+
+    '</svg>';
+}
+
+/* ================= 双群尾块 ================= */
+function qrGroupSection(g){
+  if(!g || !g.groups || !g.groups.length) return null;
+  var wrap=el("div","qg-wrap");
+  if(g.head) wrap.appendChild(el("div","qg-head",g.head));
+  if(g.sub) wrap.appendChild(el("div","qg-sub",g.sub));
+  var row=el("div","qg-row");
+  g.groups.forEach(function(item,i){
+    var card=el("div","qg-card "+(i===0?"c1":"c2"));
+    if(item.image){
+      var im=document.createElement("img"); im.className="qg-img"; im.src=item.image; card.appendChild(im);
+    }else{
+      var q=svgEl(qrSVG((item.seed||20261031),196)); q.setAttribute("class","qg-img"); card.appendChild(q);
+    }
+    card.appendChild(el("div","qg-name",item.name||""));
+    if(item.desc) card.appendChild(el("div","qg-desc",item.desc));
+    if(item.tag) card.appendChild(el("div","qg-tag",item.tag));
+    row.appendChild(card);
+  });
+  wrap.appendChild(row);
+  if(g.pick) wrap.appendChild(el("div","qg-pick",g.pick));
+  if(g.survey){
+    var sv=el("div","qg-survey");
+    if(g.survey.image){
+      var sim=document.createElement("img"); sim.className="qs-img"; sim.src=g.survey.image; sv.appendChild(sim);
+    }
+    var sb=el("div","qs-body");
+    if(g.survey.title) sb.appendChild(el("div","qs-title",g.survey.title));
+    if(g.survey.desc) sb.appendChild(el("div","qs-desc",g.survey.desc));
+    if(g.survey.tag) sb.appendChild(el("div","qs-tag",g.survey.tag));
+    sv.appendChild(sb);
+    wrap.appendChild(sv);
+  }
+  return wrap;
+}
+
+/* ================= 渲染 ================= */
+var CFG = JSON.parse(document.getElementById("config").textContent);
+
+function render(cfg){
+  var poster=document.getElementById("poster");
+  poster.innerHTML="";
+
+  /* 1 品牌头 */
+  if(cfg.brand && (cfg.brand.letters||[]).length){
+    var row=el("div","brand-row");
+    (cfg.brand.letters||[]).forEach(function(L,i){
+      var colors=cfg.brand.colors||["blue"];
+      var b=el("div","brand-block");
+      b.appendChild(svgEl(brandBlockSVG(L,colors[i%colors.length],i%3)));
+      row.appendChild(b);
+    });
+    poster.appendChild(row);
+  }
+  if(cfg.org) poster.appendChild(el("div","org",cfg.org));
+
+  /* 2 场次胶囊 */
+  if(cfg.badge) poster.appendChild(el("div","badge "+(cfg.badgeTone||"blue"),cfg.badge));
+
+  /* 3 标题 / 副标题 */
+  var t=el("div","title",cfg.title); poster.appendChild(t);
+  if(cfg.subtitle) poster.appendChild(el("div","subtitle",cfg.subtitle));
+
+  /* 4 时间地点条 */
+  if((cfg.meta||[]).length){
+    var ms=el("div","meta-strip");
+    cfg.meta.forEach(function(m){
+      var item=el("div","meta-item");
+      item.appendChild(el("span","mi",m.icon||""));
+      item.appendChild(el("span",null,m.text||""));
+      ms.appendChild(item);
+    });
+    poster.appendChild(ms);
+  }
+
+  /* 5 引导句 */
+  if(cfg.lead) poster.appendChild(el("div","lead",cfg.lead));
+
+  /* 6 内容要点 */
+  if((cfg.points||[]).length){
+    if(cfg.pointsTitle){
+      var st=el("div","sec-title");
+      st.appendChild(el("div","sec-bar"));
+      st.appendChild(el("span","st",cfg.pointsTitle));
+      if(cfg.pointsSub) st.appendChild(el("span","st-sub",cfg.pointsSub));
+      poster.appendChild(st);
+    }
+    var box=el("div","points");
+    cfg.points.forEach(function(p,i){
+      var tone=TONES[i%TONES.length];
+      var card=el("div","point");
+      card.style.setProperty("--pc",HEX[tone]);
+      card.appendChild(el("div","p-num",String(i+1)));
+      var body=el("div","p-body");
+      body.appendChild(el("div","p-title",p.title));
+      if(p.desc) body.appendChild(el("div","p-desc",p.desc));
+      card.appendChild(body);
+      box.appendChild(card);
+    });
+    poster.appendChild(box);
+  }
+
+  /* 7 讲者卡 */
+  if((cfg.speakers||[]).length){
+    if(cfg.speakersTitle){
+      var st2=el("div","sec-title");
+      st2.appendChild(el("div","sec-bar"));
+      st2.appendChild(el("span","st",cfg.speakersTitle));
+      if(cfg.speakersSub) st2.appendChild(el("span","st-sub",cfg.speakersSub));
+      poster.appendChild(st2);
+    }
+    var sbox=el("div","speakers");
+    cfg.speakers.forEach(function(s,i){
+      var tone=TONES[i%TONES.length];
+      var card=el("div","sp-card");
+      card.style.setProperty("--sc",HEX[tone]);
+      card.appendChild(el("div","sp-avatar",(s.name||"?").slice(0,1)));
+      var body=el("div","sp-body");
+      var line=el("div","sp-line");
+      line.appendChild(el("span","sp-name",s.name||""));
+      if(s.role) line.appendChild(el("span","sp-role",s.role));
+      body.appendChild(line);
+      if(s.topic) body.appendChild(el("div","sp-topic",s.topic));
+      card.appendChild(body);
+      sbox.appendChild(card);
+    });
+    poster.appendChild(sbox);
+  }
+
+  /* 8 高亮尾句 */
+  if(cfg.tail){
+    var tail=el("div","tail");
+    tail.appendChild(el("span","mark",cfg.tail));
+    poster.appendChild(tail);
+  }
+
+  /* 9 单码区 */
+  if(cfg.qr && (cfg.qr.image || cfg.qr.title)){
+    var qo=el("div","qr-one");
+    if(cfg.qr.image){
+      var qi=document.createElement("img"); qi.src=cfg.qr.image; qo.appendChild(qi);
+    }else{
+      qo.appendChild(svgEl(qrSVG((cfg.qr&&cfg.qr.seed)||20261031,150)));
+    }
+    var qb=el("div","qo-body");
+    if(cfg.qr.title) qb.appendChild(el("div","qo-title",cfg.qr.title));
+    if(cfg.qr.desc) qb.appendChild(el("div","qo-desc",cfg.qr.desc));
+    qo.appendChild(qb);
+    poster.appendChild(qo);
+  }
+
+  /* 10 双群尾块 */
+  var qg=qrGroupSection(cfg.qrGroups); if(qg) poster.appendChild(qg);
+
+  /* 11 落款 */
+  var _ft=(cfg.cta&&typeof cfg.cta==="object"&&cfg.cta.footer)||cfg.footer; /* 落款也可能写在 cta 对象里 */
+ if(_ft) poster.appendChild(el("div","footer",_ft));
+
+  /* 自动缩字号 */
+  fitText(t,74,44);
+  Array.prototype.forEach.call(poster.querySelectorAll(".subtitle"),function(n){ fitText(n,34,24); });
+  Array.prototype.forEach.call(poster.querySelectorAll(".lead"),function(n){ fitText(n,27,21); });
+}
+
+/* ================= 导出（SVG foreignObject → canvas → JPEG） ================= */
+function exportJPG(opts){
+  opts=opts||{};
+  var scale=opts.scale||2, quality=opts.quality||0.92,
+      filename=opts.filename||((CFG.exportName||"poster")+".jpg"),
+      returnDataUrl=!!opts.returnDataUrl;
+  var poster=document.getElementById("poster");
+  var w=poster.offsetWidth, h=poster.offsetHeight+16;
+  var styles=Array.prototype.map.call(document.querySelectorAll("style"),function(s){return s.textContent;}).join("\n");
+  var NS="http://www.w3.org/1999/xhtml";
+  var wrap=document.createElementNS(NS,"div");
+  wrap.setAttribute("xmlns",NS);
+  wrap.setAttribute("style","width:"+w+"px;height:"+h+"px;margin:0;background:#fff;");
+  var st=document.createElementNS(NS,"style"); st.textContent=styles; wrap.appendChild(st);
+  var clone=poster.cloneNode(true);
+  clone.setAttribute("style","transform:none;");
+  wrap.appendChild(clone);
+  var xhtml=new XMLSerializer().serializeToString(wrap);
+  var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'+
+          '<foreignObject x="0" y="0" width="'+w+'" height="'+h+'">'+xhtml+'</foreignObject></svg>';
+  return new Promise(function(resolve,reject){
+    var img=new Image();
+    img.onload=function(){
+      try{
+        var canvas=document.createElement("canvas");
+        canvas.width=w*scale; canvas.height=h*scale;
+        var ctx=canvas.getContext("2d");
+        ctx.fillStyle="#FFFFFF"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.setTransform(scale,0,0,scale,0,0);
+        ctx.drawImage(img,0,0,w,h);
+        var dataUrl=canvas.toDataURL("image/jpeg",quality);
+        if(returnDataUrl){ resolve({ok:true,width:w*scale,height:h*scale,dataUrl:dataUrl,
+          bytes:Math.round((dataUrl.length-dataUrl.indexOf(",")-1)*3/4)}); return; }
+        var a=document.createElement("a");
+        a.href=dataUrl; a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        resolve({ok:true,width:w*scale,height:h*scale,bytes:Math.round((dataUrl.length-dataUrl.indexOf(",")-1)*3/4)});
+      }catch(e){ reject(e); }
+    };
+    img.onerror=function(){ reject(new Error("SVG 栅格化失败：检查是否使用了外链图片/网络字体/CSS filter")); };
+    img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+  });
+}
+
+/* ================= 质检报告 ================= */
+function posterReport(){
+  var p=document.getElementById("poster"), r=p.getBoundingClientRect(), bad=[], shrunk=[];
+  Array.prototype.forEach.call(p.querySelectorAll("*"),function(n){
+    var b=n.getBoundingClientRect();
+    if(b.width===0&&b.height===0) return;
+    if(b.right>r.right+1||b.left<r.left-1||b.bottom>r.bottom+1||b.top<r.top-1){
+      var cls=(n.className&&n.className.baseVal!==undefined)?n.className.baseVal:(n.className||"");
+      bad.push({tag:n.tagName,cls:String(cls),text:(n.textContent||"").trim().slice(0,18)});
+    }
+    if(n.scrollWidth>n.clientWidth+2&&getComputedStyle(n).overflow!=="visible"){
+      bad.push({tag:n.tagName,cls:String(n.className||""),text:"横向溢出:"+(n.textContent||"").trim().slice(0,18)});
+    }
+    if(n.getAttribute&&n.getAttribute("data-fit")){
+      shrunk.push({tag:n.tagName,cls:String(n.className||""),text:(n.textContent||"").trim().slice(0,18),fit:n.getAttribute("data-fit")});
+    }
+  });
+  return {width:p.offsetWidth,height:p.offsetHeight,overflow:bad,shrunk:shrunk};
+}
+
+/* ================= 装配 ================= */
+window.__exportJPG=exportJPG;
+window.__posterReport=posterReport;
+document.getElementById("btn-export").addEventListener("click",function(){ exportJPG(); });
+window.addEventListener("keydown",function(e){
+  if((e.ctrlKey||e.metaKey)&&(e.key==="e"||e.key==="E")){ e.preventDefault(); exportJPG(); }
+});
+function fitStage(){
+  var wrap=document.getElementById("stage-wrap"), stage=document.getElementById("stage");
+  var s=Math.min(1,(window.innerWidth-60)/1080);
+  stage.style.transform="scale("+s+")";
+  wrap.style.height=(document.getElementById("poster").offsetHeight*s+160)+"px";
+}
+render(CFG);
+fitStage();
+window.addEventListener("resize",fitStage);
+</script>
+</body>
+</html>

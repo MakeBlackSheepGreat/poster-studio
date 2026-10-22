@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>模板四 · 议程长图型 930×自动高</title>
+<style>
+/* ============ 设计 token（见 DESIGN-LANGUAGE.md 配方④） ============ */
+:root{
+  --blue:#2E7DF6; --red:#F5401C; --orange:#FF8A1E; --yellow:#FFC53D;
+  --ink:#1A1D24; --gray:#5A6270;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:#EDEFF3;}
+body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Source Han Sans SC",sans-serif;}
+#stage-wrap{display:flex;justify-content:center;padding:30px;}
+#stage{transform-origin:top center;}
+#poster{width:930px;background:#F2F2F3;position:relative;overflow:hidden;
+  padding:52px 56px 120px;}
+
+#toolbar{position:fixed;top:12px;right:16px;z-index:99;display:flex;gap:8px;}
+#toolbar button{border:0;border-radius:999px;padding:10px 22px;font-size:15px;font-weight:700;
+  background:var(--blue);color:#fff;cursor:pointer;}
+#toolbar span{align-self:center;font-size:13px;color:#666;}
+
+/* ============ 装饰（全部限制在画布内，不触发布局告警） ============ */
+.decor{position:absolute;z-index:0;}
+.d1{left:0;bottom:0;width:360px;height:360px;border-radius:0 360px 0 0;background:var(--blue);}
+.d2{left:300px;bottom:0;width:520px;height:260px;border-radius:260px 260px 0 0;background:var(--yellow);}
+.d3{right:96px;bottom:1180px;width:62px;height:62px;background:var(--orange);}
+.d4{right:0;top:36%;width:150px;height:300px;border-radius:150px 0 0 150px;background:#7BD86A;}
+.d5{left:0;top:22%;width:110px;height:220px;border-radius:0 110px 110px 0;background:var(--orange);}
+.d6{right:0;top:7%;width:130px;height:260px;border-radius:130px 0 0 130px;background:#FFE9A8;}
+.content{position:relative;z-index:2;}
+
+/* ============ 头部 ============ */
+.brand-row{position:relative;display:flex;justify-content:center;gap:18px;margin-bottom:14px;}
+.brand-block{width:150px;height:150px;}
+.brand-block svg{width:150px;height:150px;display:block;}
+.bubble{position:absolute;border-radius:16px;font-family:Arial,sans-serif;font-weight:900;
+  color:#fff;display:flex;align-items:center;justify-content:center;}
+.bubble.b1{width:78px;height:56px;font-size:27px;top:-4px;left:calc(50% - 282px);background:var(--orange);}
+.bubble.b2{width:64px;height:56px;font-size:27px;top:-4px;left:calc(50% + 222px);background:var(--yellow);color:var(--ink);}
+.title{width:100%;text-align:center;font-size:44px;font-weight:900;color:var(--ink);
+  letter-spacing:1px;white-space:nowrap;margin:4px 0 0;}
+.badge-row{display:flex;justify-content:center;}
+.badge{display:inline-block;background:var(--blue);color:#fff;font-size:27px;font-weight:800;
+  padding:9px 32px;border-radius:999px;margin:14px 0 8px;}
+.host{width:100%;text-align:center;font-size:24px;font-weight:700;color:#3A4150;}
+.meta{display:flex;justify-content:center;gap:44px;margin:22px 0 6px;}
+.meta-item{font-size:26px;font-weight:700;color:var(--ink);white-space:nowrap;}
+.venue{width:100%;text-align:center;font-size:22px;color:#3A4150;line-height:1.7;font-weight:500;}
+
+/* ============ 区块：书签标签 + 白卡片 ============ */
+.sec{margin-top:34px;}
+.sec-label{display:inline-flex;position:relative;z-index:3;margin-left:10px;padding:11px 28px;
+  border-radius:20px 20px 20px 6px;color:#fff;font-size:31px;font-weight:900;letter-spacing:2px;}
+.sec-label.blue{background:var(--blue);}
+.sec-label.red{background:var(--red);}
+.sec-label.orange{background:var(--orange);}
+.sec-card{position:relative;margin-top:-14px;background:#fff;border-radius:34px;
+  padding:50px 30px 28px;box-shadow:0 12px 32px rgba(26,29,36,.07);}
+
+/* callout 高亮句 */
+.callout{display:flex;align-items:center;justify-content:center;gap:10px;font-size:28px;font-weight:800;text-align:center;line-height:1.7;margin:0 0 24px;color:var(--ink);}
+.callout .mark{flex:0 1 auto;}
+.callout .mark{background:linear-gradient(transparent 52%, #FFE9A8 52%);padding:0 3px;}
+
+/* 简介/证明子卡 */
+.info-card{display:flex;gap:18px;align-items:flex-start;border-radius:20px;padding:22px 24px;margin-bottom:18px;}
+.info-card.yellow{background:#FFF6DB;}
+.info-card.blue{background:#EAF2FF;}
+.info-card.red{background:#FFEDE8;}
+.info-card.orange{background:#FFF0E0;}
+.info-main{flex:1;}
+.info-label{font-size:27px;font-weight:900;margin-bottom:9px;}
+.info-card.yellow .info-label{color:#D99400;}
+.info-card.blue .info-label{color:var(--blue);}
+.info-card.red .info-label{color:var(--red);}
+.info-card.orange .info-label{color:#F07800;}
+.info-desc{font-size:24px;line-height:1.7;color:#333A45;font-weight:500;}
+.info-foot{font-size:19px;color:#8A92A0;font-weight:500;margin-top:9px;}
+.info-icon{flex:0 0 auto;width:82px;height:82px;margin-top:4px;}
+.note{font-size:19px;color:#8A92A0;font-weight:500;padding:0 6px;}
+
+/* ============ 时间轴行 ============ */
+.t-row{display:flex;align-items:center;margin:26px 2px 20px;}
+.t-num{width:42px;height:42px;border-radius:50%;color:#fff;font-size:23px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;margin-right:13px;flex:0 0 auto;}
+.t-num.blue{background:var(--blue);} .t-num.red{background:var(--red);}
+.t-title{font-size:29px;font-weight:900;color:var(--ink);white-space:nowrap;}
+.t-lead{flex:1;border-bottom:4px dotted #C9CFDA;margin:0 14px;transform:translateY(-5px);}
+.t-time{font-size:24px;font-weight:800;padding:7px 18px;border-radius:13px;white-space:nowrap;color:var(--ink);}
+.t-time.yellow{background:#FFF3D1;} .t-time.blue{background:#E3EEFF;}
+.t-time.red{background:#FFE6E0;} .t-time.orange{background:#FFEEDD;}
+
+/* 嘉宾卡 */
+.talk{position:relative;background:#fff;border:2px solid #EEF1F6;border-radius:22px;
+  padding:24px 28px;margin:18px 6px 22px;box-shadow:0 8px 22px rgba(26,29,36,.06);}
+.talk.off{margin-left:42px;}
+.talk[data-decor="r"]{padding-right:92px;}
+.talk[data-decor="l"]{padding-left:92px;}
+.talk-title{font-size:28px;font-weight:900;line-height:1.5;color:var(--tc,var(--blue));}
+.speaker{display:inline-flex;align-items:center;font-size:22px;font-weight:800;color:var(--ink);
+  padding:7px 16px;border-radius:12px;margin:11px 0;background:var(--ts,#E3EEFF);}
+.bullets li{list-style:none;font-size:23px;line-height:1.7;color:#333A45;font-weight:500;
+  padding-left:25px;position:relative;margin-bottom:6px;}
+.bullets li::before{content:"◆";position:absolute;left:0;top:2px;font-size:17px;color:var(--tc,var(--blue));}
+.mini-brand{position:absolute;width:112px;height:112px;z-index:2;}
+.mini-brand svg{width:112px;height:112px;display:block;}
+.mini-brand.r{right:-40px;top:-30px;}
+.mini-brand.l{left:-40px;bottom:-32px;}
+
+/* ============ 二维码尾部 ============ */
+.cta{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;margin-top:50px;}
+.qr-img{width:238px;height:238px;display:block;}
+.cta-cap{font-size:25px;font-weight:700;color:var(--ink);margin:15px 0 40px;}
+.cta-foot{font-size:29px;font-weight:900;color:var(--ink);}
+
+/* ============ 双群二维码尾块（cfg.qrGroups 驱动） ============ */
+.qg-wrap{margin-top:56px;display:flex;flex-direction:column;align-items:center;}
+.qg-head{font-size:26px;font-weight:900;color:var(--ink);margin-bottom:6px;text-align:center;}
+.qg-sub{font-size:20px;font-weight:500;color:var(--gray);margin-bottom:22px;text-align:center;line-height:1.6;}
+.qg-row{display:flex;gap:22px;align-items:stretch;justify-content:center;flex-wrap:nowrap;}
+.qg-card{background:#fff;border:3px solid var(--line,#D9DEE7);border-radius:20px;padding:18px 16px;display:flex;flex-direction:column;align-items:center;width:300px;}
+.qg-card .qg-img{width:196px;height:196px;display:block;border-radius:8px;}
+.qg-card .qg-ph{display:flex;align-items:center;justify-content:center;background:#EEF1F6;color:#8A93A3;font-size:17px;font-weight:700;text-align:center;}
+.qg-name{font-size:21px;font-weight:900;color:var(--ink);margin-top:12px;text-align:center;}
+.qg-desc{font-size:18px;font-weight:500;color:#333A45;line-height:1.65;margin-top:7px;text-align:center;}
+.qg-tag{font-size:17px;font-weight:800;padding:5px 14px;border-radius:999px;margin-top:10px;}
+.qg-card.c1{border-color:var(--blue);}
+.qg-card.c1 .qg-tag{background:#E3EEFF;color:var(--blue-deep,#1B4FD8);}
+.qg-card.c2{border-color:var(--orange);}
+.qg-card.c2 .qg-tag{background:#FFEEDD;color:#B4560A;}
+.qg-pick{font-size:19px;font-weight:700;color:var(--ink);margin-top:20px;text-align:center;line-height:1.7;background:#FFF6DB;border-radius:14px;padding:12px 22px;}
+.qg-survey{margin-top:22px;display:flex;align-items:center;gap:22px;background:#fff;border:3px solid var(--line,#D9DEE7);border-radius:20px;padding:16px 22px;width:100%;box-sizing:border-box;}
+.qg-survey .qs-img{width:132px;height:132px;display:block;border-radius:8px;flex:0 0 auto;}
+.qg-survey .qs-body{flex:1;min-width:0;}
+.qg-survey .qs-title{font-size:21px;font-weight:900;color:var(--ink);line-height:1.45;}
+.qg-survey .qs-desc{font-size:18px;font-weight:500;color:#333A45;line-height:1.65;margin-top:6px;}
+.qg-survey .qs-tag{display:inline-block;font-size:17px;font-weight:800;padding:4px 13px;border-radius:999px;background:#E3EEFF;color:var(--blue-deep,#1B4FD8);margin-top:9px;}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <span>模板四 · 议程长图型 930×自动高</span>
+  <button id="btn-export">导出 JPG</button>
+</div>
+
+<div id="stage-wrap"><div id="stage">
+<div id="poster"></div>
+</div></div>
+
+<script id="config" type="application/json">
+{
+  "brand": {
+    "letters": [
+      "C",
+      "A",
+      "I"
+    ],
+    "colors": [
+      "blue",
+      "red",
+      "orange"
+    ],
+    "bubbles": [
+      "♥",
+      "</>"
+    ]
+  },
+  "title": "第一次 AI 讲座 & 第一次 AI 会议",
+  "badge": "两场连办 · 先上手再上台",
+  "host": "XX 协会 主办",
+  "meta": [
+    {
+      "icon": "cal",
+      "text": "10 月 31 日（周六）19:00–21:30"
+    },
+    {
+      "icon": "pin",
+      "text": "教学楼 101"
+    }
+  ],
+  "venue": [
+    "18:30 开始签到 · 教室号见群公告",
+    "（具体教室以借用结果为准，QQ 群公告公布）"
+  ],
+  "intro": {
+    "label": "活动简介",
+    "tone": "blue",
+    "callout": "一晚上两段：先把工具教到能用，再让会员上台讲经历！",
+    "cards": [
+      {
+        "tone": "yellow",
+        "label": "讲座上手",
+        "icon": "code",
+        "desc": "WorkBuddy 与 Trae 现场演示 + 动手跟做，每人带电脑跟做一遍，带走一个跑起来的小练习。",
+        "foot": "*不限基础，卡住举手，助教巡场"
+      },
+      {
+        "tone": "blue",
+        "label": "会议分享",
+        "icon": "mic",
+        "desc": "4 位会员上台讲 AI 在学习、开发里的真实用法，每人 8~12 分钟，圆桌讨论现场提问。",
+        "foot": "*讲真事、讲踩过的坑，不讲空话"
+      }
+    ],
+    "note": "*注：分享内容仅代表分享者个人观点。"
+  },
+  "proof": {
+    "label": "活动证明",
+    "tone": "orange",
+    "cards": [
+      {
+        "tone": "yellow",
+        "label": "讲座证明 · 集赞领取",
+        "icon": "star",
+        "desc": "把宣传说说转发到 QQ 空间，集满 20 个赞，截图发秘书处登记，3 个工作日内发电子证明。",
+        "foot": "*只认活动当天 24:00 前的赞数，截图截止 11 月 3 日"
+      },
+      {
+        "tone": "blue",
+        "label": "会议证明 · 到场签到领取",
+        "icon": "check",
+        "desc": "当天到场听会并现场签到，散场后领取活动证明。",
+        "foot": "*代签、中途离场超 20 分钟不发；两场证明分开领"
+      }
+    ],
+    "note": "*注：本轮无经费不安排茶歇，自带水杯即可，等有经费再补。"
+  },
+  "agenda": {
+    "label": "活动安排",
+    "tone": "red",
+    "rows": [
+      {
+        "title": "签到入场 · 设备调试",
+        "time": "18:30–19:00",
+        "tone": "yellow"
+      },
+      {
+        "num": 1,
+        "title": "第一次 AI 讲座 · 工具上手",
+        "time": "19:00–20:15",
+        "tone": "blue",
+        "talks": [
+          {
+            "tone": "blue",
+            "title": "AI 工具上手第一课：WorkBuddy 与 Trae 现场演示 + 动手跟做",
+            "speaker": "主讲：技术部长",
+            "bullets": [
+              "两个工具是什么、怎么打开、怎么问出第一个有用回答",
+              "AI 问答与代码生成演示：报错贴回去，改到跑通为止",
+              "20 分钟动手跟做，照讲义做两个小练习"
+            ],
+            "decor": "C"
+          }
+        ]
+      },
+      {
+        "title": "休息与转场 · 会员作品小展示",
+        "time": "20:15–20:25",
+        "tone": "yellow"
+      },
+      {
+        "num": 2,
+        "title": "第一次 AI 会议 · 会员分享",
+        "time": "20:25–21:09",
+        "tone": "red",
+        "talks": [
+          {
+            "tone": "blue",
+            "title": "用 AI 学好一门课：从课件到自己的笔记",
+            "speaker": "演讲人 A",
+            "bullets": [
+              "提问前先给背景：课程名、章节、卡在哪一步",
+              "让 AI 做整理不做代写：提纲、小测、错题归类"
+            ],
+            "decor": "C"
+          },
+          {
+            "tone": "red",
+            "title": "用 AI 辅助编程与项目开发：从看不懂报错到跑起来",
+            "speaker": "演讲人 B",
+            "bullets": [
+              "报错贴给 AI 解释原因，自己改一遍，说出为什么这么改",
+              "需求写清输入、输出、环境，生成的代码读懂再用"
+            ],
+            "decor": "A"
+          },
+          {
+            "tone": "orange",
+            "title": "AI 智能体与自动化工作流：把重复的活交出去",
+            "speaker": "演讲人 C",
+            "bullets": [
+              "给它目标和步骤，它自己拆任务、调工具、给结果",
+              "批量整理文件、汇总通知、按模板出周报草稿"
+            ],
+            "decor": "I"
+          },
+          {
+            "tone": "blue",
+            "title": "AI 的局限：信息甄别与学术诚信底线",
+            "speaker": "演讲人 D",
+            "bullets": [
+              "编出来的参考文献、数据和函数名很常见，重要结论找出处",
+              "作业和论文按学校要求来，自己写的和 AI 帮的分清"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "圆桌讨论 · 现场提问",
+        "time": "21:09–21:22",
+        "tone": "yellow"
+      },
+      {
+        "title": "总结 · 证明发放 · 合影",
+        "time": "21:22–21:30",
+        "tone": "yellow"
+      }
+    ]
+  },
+  "cta": {
+    "qr": {
+      "image": "",
+      "seed": 20261031,
+      "text": "扫码进群 · 教室号见群公告"
+    },
+    "footer": "XX 大学 XX 协会"
+  },
+  "exportName": "poster-agenda",
+  "qrGroups": {
+    "head": "扫码进群 · 群里有活动和 AI 的后续消息",
+    "sub": "两个群作用不同，按自己需要加",
+    "groups": [
+      {
+        "name": "协会活动群",
+        "desc": "领活动证明、接收协会最新通知",
+        "tag": "只领证明就加这个",
+        "seed": 20261031,
+        "image": ""
+      },
+      {
+        "name": "AI 交流群",
+        "desc": "平时聊 AI 内容、看最新前沿消息",
+        "tag": "想一起学 AI 再加这个",
+        "seed": 20261032,
+        "image": ""
+      }
+    ],
+    "pick": "只领证明 → 加协会群就够了；想一起交流学习 AI → 再加第 2 个群",
+    "survey": {
+      "title": "AI 基础与兴趣调研问卷",
+      "desc": "第一次 AI 会议配套问卷，1 分钟填完，帮我们把后面活动的内容排得更对路。",
+      "tag": "扫码填写",
+      "image": ""
+    }
+  }
+}
+</script>
+
+<script>
+/* ================= 工具 ================= */
+var HEX = { blue:"#2E7DF6", "blue-deep":"#1B4FD8", red:"#F5401C", orange:"#FF8A1E",
+            "orange-strong":"#F07800", yellow:"#FFC53D", "yellow-soft":"#FFE9A8",
+            ink:"#1A1D24", gray:"#5A6270", line:"#D9DEE7" };
+var TONE_TEXT = { blue:"#2E7DF6", red:"#F5401C", orange:"#F07800", yellow:"#D99400" };
+var TONE_SOFT = { blue:"#E3EEFF", red:"#FFE6E0", orange:"#FFEEDD", yellow:"#FFF3D1" };
+function el(tag, cls, text){ var n=document.createElement(tag); if(cls) n.className=cls;
+  if(text!=null) n.textContent=text; return n; }
+function svgEl(str){ var d=document.createElement("div"); d.innerHTML=str; return d.firstElementChild; }
+function fitText(node, max, min){ var s=max; node.style.fontSize=s+"px";
+  while(s>min && node.scrollWidth>node.clientWidth+1){ s-=2; node.style.fontSize=s+"px"; }
+  if(s<max){ node.setAttribute("data-fit", max+"\u2192"+s); } else { node.removeAttribute("data-fit"); } }
+
+/* 品牌字母色块（带表情脸） */
+function brandBlockSVG(letter, colorKey, variant){
+  var c = HEX[colorKey] || colorKey;
+  var face = "";
+  if(variant===0){
+    face = '<circle cx="82" cy="86" r="11" fill="#fff"/><circle cx="138" cy="86" r="11" fill="#fff"/>'+
+           '<path d="M92 116 Q110 132 128 116" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }else if(variant===1){
+    face = '<path d="M68 90 Q82 74 96 90" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>'+
+           '<path d="M124 90 Q138 74 152 90" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>'+
+           '<path d="M92 116 Q110 134 128 116" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }else{
+    face = '<path d="M66 82 L94 94 L66 106" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>'+
+           '<path d="M154 82 L126 94 L154 106" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>'+
+           '<path d="M96 120 L124 120" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>';
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220">'+
+    '<rect width="220" height="220" rx="46" fill="'+c+'"/>'+face+
+    '<text x="110" y="196" font-family="Arial" font-size="76" font-weight="900" fill="#fff" text-anchor="middle">'+letter+'</text>'+
+    '</svg>';
+}
+
+/* 子卡图标 */
+function iconSVG(kind){
+  if(kind==="code"){
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 82" width="82" height="82">'+
+      '<rect x="4" y="2" width="74" height="78" rx="16" fill="#FFC53D" stroke="#1A1D24" stroke-width="5"/>'+
+      '<path d="M32 28 L20 41 L32 54" fill="none" stroke="#1A1D24" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '<path d="M50 28 L62 41 L50 54" fill="none" stroke="#1A1D24" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '</svg>';
+  }
+  if(kind==="mic"){
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 82" width="82" height="82">'+
+      '<circle cx="41" cy="41" r="37" fill="#fff" stroke="#1A1D24" stroke-width="5"/>'+
+      '<rect x="33" y="18" width="16" height="30" rx="8" fill="#2E7DF6"/>'+
+      '<path d="M25 40 Q25 56 41 56 Q57 56 57 40" fill="none" stroke="#1A1D24" stroke-width="5" stroke-linecap="round"/>'+
+      '<path d="M41 56 L41 64" stroke="#1A1D24" stroke-width="5" stroke-linecap="round"/>'+
+      '</svg>';
+  }
+  if(kind==="star"){
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 82" width="82" height="82">'+
+      '<circle cx="41" cy="41" r="37" fill="#fff" stroke="#1A1D24" stroke-width="5"/>'+
+      '<path d="M41 20 L48 34 L63 36 L52 47 L55 62 L41 55 L27 62 L30 47 L19 36 L34 34 Z" fill="#FFC53D" stroke="#1A1D24" stroke-width="4" stroke-linejoin="round"/>'+
+      '</svg>';
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 82" width="82" height="82">'+
+    '<circle cx="41" cy="41" r="37" fill="#fff" stroke="#1A1D24" stroke-width="5"/>'+
+    '<path d="M25 42 L37 54 L59 30" fill="none" stroke="#2E7DF6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+
+    '</svg>';
+}
+
+/* 占位二维码（真实二维码：把 data URI 填 config 的 qr.image） */
+function qrSVG(seed, size){
+  var n=25, s=size/n, rnd=seed||20261031;
+  function R(){ rnd=(rnd*9301+49297)%233280; return rnd/233280; }
+  function finder(x,y){
+    return '<rect x="'+(x*s)+'" y="'+(y*s)+'" width="'+(7*s)+'" height="'+(7*s)+'" fill="#1A1D24"/>'+
+           '<rect x="'+((x+1)*s)+'" y="'+((y+1)*s)+'" width="'+(5*s)+'" height="'+(5*s)+'" fill="#fff"/>'+
+           '<rect x="'+((x+2)*s)+'" y="'+((y+2)*s)+'" width="'+(3*s)+'" height="'+(3*s)+'" fill="#1A1D24"/>';
+  }
+  var out='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'">'+
+          '<rect width="'+size+'" height="'+size+'" fill="#fff"/>';
+  for(var y=0;y<n;y++){
+    for(var x=0;x<n;x++){
+      var inFinder=(x<8&&y<8)||(x>n-9&&y<8)||(x<8&&y>n-9);
+      if(inFinder) continue;
+      if(R()>0.52) out+='<rect x="'+(x*s)+'" y="'+(y*s)+'" width="'+s+'" height="'+s+'" fill="#1A1D24"/>';
+    }
+  }
+  out+=finder(0,0)+finder(n-7,0)+finder(0,n-7)+'</svg>';
+  return out;
+}
+
+/* ================= 渲染 ================= */
+var CFG = JSON.parse(document.getElementById("config").textContent);
+
+function timeRow(row){
+  var r=el("div","t-row");
+  if(row.num){ var num=el("div","t-num "+(row.tone||"blue"),String(row.num)); r.appendChild(num); }
+  r.appendChild(el("div","t-title",row.title));
+  r.appendChild(el("div","t-lead"));
+  r.appendChild(el("div","t-time "+(row.tone||"yellow"),row.time));
+  return r;
+}
+
+function talkCard(talk, brand){
+  var tone=talk.tone||"blue";
+  var c=el("div","talk");
+  c.style.setProperty("--tc",TONE_TEXT[tone]);
+  c.style.setProperty("--ts",TONE_SOFT[tone]);
+  c.appendChild(el("div","talk-title",talk.title));
+  c.appendChild(el("div","speaker","\u{1F399} "+talk.speaker));
+  var ul=el("ul","bullets");
+  (talk.bullets||[]).forEach(function(b){ ul.appendChild(el("li",null,b)); });
+  c.appendChild(ul);
+  if(talk.decor && brand && brand.letters){
+    var i=brand.letters.indexOf(talk.decor);
+    if(i>=0){
+      var side=(i%2===0?"r":"l");
+      c.setAttribute("data-decor",side);
+      var mb=el("div","mini-brand "+side);
+      mb.appendChild(svgEl(brandBlockSVG(brand.letters[i],(brand.colors||["blue"])[i%brand.colors.length],i%3)));
+      c.appendChild(mb);
+    }
+  }
+  return c;
+}
+
+function infoSection(sec){
+  var wrap=el("div","sec");
+  var label=el("div","sec-label "+(sec.tone||"blue"),sec.label);
+  wrap.appendChild(label);
+  var card=el("div","sec-card");
+  if(sec.callout){
+    var co=el("div","callout");
+    co.appendChild(document.createTextNode("\u{1F4E3} "));
+    var mk=el("span","mark",sec.callout); co.appendChild(mk);
+    co.appendChild(document.createTextNode(" \u{1F4E3}"));
+    card.appendChild(co);
+  }
+  (sec.cards||[]).forEach(function(item){
+    var c=el("div","info-card "+(item.tone||"yellow"));
+    var main=el("div","info-main");
+    main.appendChild(el("div","info-label",item.label));
+    main.appendChild(el("div","info-desc",item.desc));
+    if(item.foot) main.appendChild(el("div","info-foot",item.foot));
+    c.appendChild(main);
+    var ic=el("div","info-icon"); ic.appendChild(svgEl(iconSVG(item.icon||"check"))); c.appendChild(ic);
+    card.appendChild(c);
+  });
+  if(sec.note) card.appendChild(el("div","note",sec.note));
+  wrap.appendChild(card);
+  return wrap;
+}
+
+function agendaSection(sec, brand){
+  var wrap=el("div","sec");
+  wrap.appendChild(el("div","sec-label "+(sec.tone||"red"),sec.label));
+  var card=el("div","sec-card");
+  (sec.rows||[]).forEach(function(row){
+    card.appendChild(timeRow(row));
+    (row.talks||[]).forEach(function(t){ card.appendChild(talkCard(t,brand)); });
+  });
+  wrap.appendChild(card);
+  return wrap;
+}
+
+
+/* ================= 双群二维码尾块（cfg.qrGroups） ================= */
+function qrGroupSection(g){
+  if(!g || !g.groups || !g.groups.length) return null;
+  var wrap=el("div","qg-wrap");
+  if(g.head) wrap.appendChild(el("div","qg-head",g.head));
+  if(g.sub) wrap.appendChild(el("div","qg-sub",g.sub));
+  var row=el("div","qg-row");
+  g.groups.forEach(function(item,i){
+    var card=el("div","qg-card "+(i===0?"c1":"c2"));
+    if(item.image){
+      var im=document.createElement("img"); im.className="qg-img"; im.src=item.image; card.appendChild(im);
+    }else if(typeof qrSVG==="function"){
+      var q=svgEl(qrSVG((item.seed||20261031),196)); q.setAttribute("class","qg-img"); card.appendChild(q);
+    }else{
+      var ph=el("div","qg-img qg-ph","二维码占位"); card.appendChild(ph);
+    }
+    card.appendChild(el("div","qg-name",item.name||""));
+    if(item.desc) card.appendChild(el("div","qg-desc",item.desc));
+    if(item.tag) card.appendChild(el("div","qg-tag",item.tag));
+    row.appendChild(card);
+  });
+  wrap.appendChild(row);
+  if(g.pick) wrap.appendChild(el("div","qg-pick",g.pick));
+  if(g.survey){
+    var sv=el("div","qg-survey");
+    if(g.survey.image){
+      var sim=document.createElement("img"); sim.className="qs-img"; sim.src=g.survey.image; sv.appendChild(sim);
+    }
+    var sb=el("div","qs-body");
+    if(g.survey.title) sb.appendChild(el("div","qs-title",g.survey.title));
+    if(g.survey.desc) sb.appendChild(el("div","qs-desc",g.survey.desc));
+    if(g.survey.tag) sb.appendChild(el("div","qs-tag",g.survey.tag));
+    sv.appendChild(sb);
+    wrap.appendChild(sv);
+  }
+  return wrap;
+}
+function render(cfg){
+  var poster=document.getElementById("poster");
+  poster.innerHTML="";
+
+  /* 装饰层 */
+  ["d1","d2","d4","d5","d6"].forEach(function(k){ poster.appendChild(el("div","decor "+k)); });
+  var content=el("div","content");
+  poster.appendChild(content);
+
+  /* 1 品牌区 */
+  var row=el("div","brand-row");
+  (cfg.brand.letters||[]).forEach(function(L,i){
+    var b=el("div","brand-block");
+    b.appendChild(svgEl(brandBlockSVG(L,(cfg.brand.colors||["blue"])[i%cfg.brand.colors.length],i%3)));
+    row.appendChild(b);
+  });
+  var bs=cfg.brand.bubbles||[];
+  if(bs[0]) row.appendChild(el("div","bubble b1",bs[0]));
+  if(bs[1]) row.appendChild(el("div","bubble b2",bs[1]));
+  content.appendChild(row);
+
+  /* 2 标题 + 徽章 + 主办 + 时间地点 */
+  content.appendChild(el("div","title",cfg.title));
+  if(cfg.badge){ var br=el("div","badge-row"); br.appendChild(el("div","badge",cfg.badge)); content.appendChild(br); }
+  if(cfg.host) content.appendChild(el("div","host",cfg.host));
+  var meta=el("div","meta");
+  (cfg.meta||[]).forEach(function(m){
+    var ic=m.icon==="pin"?"\u{1F4CD}":"\u{1F4C5} ";
+    meta.appendChild(el("div","meta-item",ic+" "+m.text));
+  });
+  content.appendChild(meta);
+  (cfg.venue||[]).forEach(function(v){ content.appendChild(el("div","venue",v)); });
+
+  /* 3 简介 / 证明 / 安排 */
+  if(cfg.intro) content.appendChild(infoSection(cfg.intro));
+  if(cfg.proof) content.appendChild(infoSection(cfg.proof));
+  if(cfg.agenda) content.appendChild(agendaSection(cfg.agenda,cfg.brand));
+
+  /* 4 二维码尾部：配了 qrGroups 双群尾块时，不再重复渲染单码 CTA */
+  if(!cfg.qrGroups){
+  var cta=el("div","cta");
+  var qrBox=el("div","qr-box");
+  if(cfg.cta && cfg.cta.qr && cfg.cta.qr.image){
+    var qi=document.createElement("img"); qi.className="qr-img"; qi.src=cfg.cta.qr.image; qrBox.appendChild(qi);
+  }else{
+    var q=svgEl(qrSVG((cfg.cta&&cfg.cta.qr&&cfg.cta.qr.seed)||20261031,238));
+    q.setAttribute("class","qr-img"); qrBox.appendChild(q);
+  }
+  cta.appendChild(qrBox);
+  cta.appendChild(el("div","cta-cap",(cfg.cta&&cfg.cta.qr&&cfg.cta.qr.text)||"扫码进群"));
+  cta.appendChild(el("div","cta-foot",(cfg.cta&&cfg.cta.footer)||""));
+  content.appendChild(cta);
+  }
+  var qg=qrGroupSection(cfg.qrGroups); if(qg) (typeof content!=='undefined' && content && content.appendChild)? content.appendChild(qg) : poster.appendChild(qg);
+  var ft=(cfg.cta&&cfg.cta.footer)||cfg.footer; /* 落款可能写在 cta 里，配了 qrGroups 时 cta 不渲染，这里兜底 */
+  if(ft && cfg.qrGroups) content.appendChild(el("div","cta-foot",ft));
+
+  /* 自动缩字号 */
+  fitText(content.querySelector(".title"),44,28);
+  Array.prototype.forEach.call(content.querySelectorAll(".meta-item"),function(n){ fitText(n,26,18); });
+  Array.prototype.forEach.call(content.querySelectorAll(".t-title"),function(n){ fitText(n,29,18); });
+  Array.prototype.forEach.call(content.querySelectorAll(".badge"),function(n){ fitText(n,27,18); });
+}
+
+/* ================= 导出（SVG foreignObject → canvas → JPEG，无外部依赖） ================= */
+function exportJPG(opts){
+  opts=opts||{};
+  var scale=opts.scale||2, quality=opts.quality||0.92,
+      filename=opts.filename||((CFG.exportName||"poster")+".jpg"),
+      returnDataUrl=!!opts.returnDataUrl;
+  var poster=document.getElementById("poster");
+  var w=poster.offsetWidth, h=poster.offsetHeight+16; /* 底部缓冲：栅格化后的字体度量可能比 DOM 略高，避免页脚被裁 */
+  var imgs=Array.prototype.slice.call(poster.querySelectorAll("img"));
+  return Promise.all(imgs.map(function(i){ return (i.decode?i.decode():Promise.resolve()).catch(function(){}); })).then(function(){
+    var styles=Array.prototype.map.call(document.querySelectorAll("style"),function(s){return s.textContent;}).join("\n");
+    var NS="http://www.w3.org/1999/xhtml";
+    var wrap=document.createElementNS(NS,"div");
+    wrap.setAttribute("xmlns",NS);
+    wrap.setAttribute("style","width:"+w+"px;height:"+h+"px;margin:0;background:#F2F2F3;");
+    var st=document.createElementNS(NS,"style"); st.textContent=styles; wrap.appendChild(st);
+    var clone=poster.cloneNode(true);
+    clone.setAttribute("style","transform:none;");
+    wrap.appendChild(clone);
+    var xhtml=new XMLSerializer().serializeToString(wrap);
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'+
+            '<foreignObject x="0" y="0" width="'+w+'" height="'+h+'">'+xhtml+'</foreignObject></svg>';
+    return new Promise(function(resolve,reject){
+      var img=new Image();
+      img.onload=function(){
+        try{
+          var canvas=document.createElement("canvas");
+          canvas.width=w*scale; canvas.height=h*scale;
+          var ctx=canvas.getContext("2d");
+          ctx.fillStyle="#F2F2F3"; ctx.fillRect(0,0,canvas.width,canvas.height);
+          ctx.setTransform(scale,0,0,scale,0,0);
+          ctx.drawImage(img,0,0,w,h);
+          var dataUrl=canvas.toDataURL("image/jpeg",quality);
+          if(returnDataUrl){ resolve({ok:true,width:w*scale,height:h*scale,dataUrl:dataUrl,
+            bytes:Math.round((dataUrl.length-dataUrl.indexOf(",")-1)*3/4)}); return; }
+          var a=document.createElement("a");
+          a.href=dataUrl; a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          resolve({ok:true,width:w*scale,height:h*scale,bytes:Math.round((dataUrl.length-dataUrl.indexOf(",")-1)*3/4)});
+        }catch(e){ reject(e); }
+      };
+      img.onerror=function(){ reject(new Error("SVG 栅格化失败：检查是否使用了外链图片/网络字体/CSS filter")); };
+      img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+    });
+  });
+}
+
+/* ================= 质检报告 ================= */
+function posterReport(){
+  var p=document.getElementById("poster"), r=p.getBoundingClientRect(), bad=[], shrunk=[];
+  Array.prototype.forEach.call(p.querySelectorAll("*"),function(n){
+    var b=n.getBoundingClientRect();
+    if(b.width===0&&b.height===0) return;
+    var cls=(n.className&&n.className.baseVal!==undefined)?n.className.baseVal:(n.className||"");
+    if(b.right>r.right+1||b.left<r.left-1||b.bottom>r.bottom+1||b.top<r.top-1){
+      bad.push({tag:n.tagName,cls:String(cls),text:(n.textContent||"").trim().slice(0,18)});
+    }
+    if(n.scrollWidth>n.clientWidth+2&&getComputedStyle(n).overflow!=="visible"){
+      bad.push({tag:n.tagName,cls:String(cls),text:"横向溢出:"+(n.textContent||"").trim().slice(0,18)});
+    }
+    if(n.getAttribute&&n.getAttribute("data-fit")){
+      shrunk.push({tag:n.tagName,cls:String(cls),text:(n.textContent||"").trim().slice(0,18),fit:n.getAttribute("data-fit")});
+    }
+  });
+  return {width:p.offsetWidth,height:p.offsetHeight,overflow:bad,shrunk:shrunk};
+}
+
+/* ================= 装配 ================= */
+window.__exportJPG=exportJPG;
+window.__posterReport=posterReport;
+document.getElementById("btn-export").addEventListener("click",function(){ exportJPG(); });
+window.addEventListener("keydown",function(e){
+  if((e.ctrlKey||e.metaKey)&&(e.key==="e"||e.key==="E")){ e.preventDefault(); exportJPG(); }
+});
+function fitStage(){
+  var wrap=document.getElementById("stage-wrap"), stage=document.getElementById("stage");
+  var poster=document.getElementById("poster");
+  var s=Math.min(1,(window.innerWidth-60)/930);
+  stage.style.transform="scale("+s+")";
+  wrap.style.height=(poster.offsetHeight*s+160)+"px";
+}
+render(CFG);
+fitStage();
+window.addEventListener("resize",fitStage);
+</script>
+</body>
+</html>
