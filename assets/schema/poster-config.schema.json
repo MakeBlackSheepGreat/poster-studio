@@ -1,0 +1,1140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MakeBlackSheepGreat/poster-studio/assets/schema/poster-config.schema.json",
+  "title": "poster-studio 模板配置",
+  "description": "五个模板的配置结构。validate.mjs 按模板 id 取 $defs 中对应定义校验。",
+  "$defs": {
+    "brand": {
+      "type": "object",
+      "required": [
+        "letters",
+        "colors"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "letters": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2
+          }
+        },
+        "colors": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "enum": [
+              "blue",
+              "red",
+              "orange",
+              "yellow"
+            ]
+          }
+        },
+        "bubbles": {
+          "type": "array",
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "maxLength": 4
+          }
+        }
+      }
+    },
+    "qrGroups": {
+      "type": "object",
+      "required": [
+        "groups"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "head": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "sub": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "groups": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "desc"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16
+              },
+              "desc": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 30
+              },
+              "tag": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16
+              },
+              "seed": {
+                "type": "integer"
+              },
+              "image": {
+                "type": "string",
+                "pattern": "^$|^data:image\\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$"
+              }
+            }
+          }
+        },
+        "pick": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 48
+        },
+        "survey": {
+          "type": "object",
+          "required": [
+            "title",
+            "desc"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24
+            },
+            "desc": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 48
+            },
+            "tag": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 12
+            },
+            "image": {
+              "type": "string",
+              "pattern": "^$|^data:image\\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$"
+            }
+          }
+        }
+      }
+    },
+    "promo": {
+      "type": "object",
+      "required": [
+        "brand",
+        "org",
+        "title",
+        "lines",
+        "dateSticker",
+        "mascot"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "brand": {
+          "$ref": "#/$defs/brand"
+        },
+        "org": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "subtitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "pill": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "lines": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 6,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20
+          }
+        },
+        "mascot": {
+          "enum": [
+            "robot",
+            "panda-desk"
+          ]
+        },
+        "dateSticker": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "cta": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "qr": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "seed": {
+              "type": "integer"
+            },
+            "note": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 30
+            },
+            "image": {
+              "type": "string",
+              "pattern": "^$|^data:image\\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$"
+            }
+          }
+        },
+        "footer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 48
+        },
+        "exportName": {
+          "type": "string"
+        },
+        "qrGroups": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qrGroups"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "spotlight": {
+      "type": "object",
+      "required": [
+        "brand",
+        "org",
+        "title",
+        "lines",
+        "mascot",
+        "tail"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "brand": {
+          "$ref": "#/$defs/brand"
+        },
+        "org": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "lines": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 20
+              },
+              "highlight": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 12
+              },
+              "size": {
+                "enum": [
+                  "big",
+                  "normal"
+                ]
+              }
+            }
+          }
+        },
+        "mascot": {
+          "enum": [
+            "robot",
+            "panda-desk"
+          ]
+        },
+        "tail": {
+          "enum": [
+            "right",
+            "left"
+          ]
+        },
+        "footer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "exportName": {
+          "type": "string"
+        },
+        "qrGroups": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qrGroups"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "long": {
+      "type": "object",
+      "required": [
+        "brand",
+        "org",
+        "title",
+        "sections"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "brand": {
+          "$ref": "#/$defs/brand"
+        },
+        "org": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "kicker": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/longSection"
+          }
+        },
+        "footer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 48
+        },
+        "exportName": {
+          "type": "string"
+        },
+        "qrGroups": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qrGroups"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "longSection": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "banner",
+            "photo",
+            "card",
+            "info",
+            "timeline",
+            "table",
+            "note"
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "banner"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20
+            },
+            "note": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 30
+            },
+            "deco": {
+              "type": "string",
+              "maxLength": 12
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "photo"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20
+            },
+            "caption": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "scene": {
+              "enum": [
+                "classroom",
+                "code",
+                "agent"
+              ]
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "card"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16
+            },
+            "lines": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 6,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            },
+            "highlight": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 12
+            }
+          },
+          "required": [
+            "title",
+            "lines"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "info"
+            },
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 6,
+              "items": {
+                "type": "object",
+                "required": [
+                  "k",
+                  "v"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "k": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8
+                  },
+                  "v": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 28
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "timeline"
+            },
+            "rows": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 10,
+              "items": {
+                "type": "object",
+                "required": [
+                  "t",
+                  "e"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "t": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10
+                  },
+                  "e": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 24
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "rows"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "table"
+            },
+            "head": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 4,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8
+              }
+            },
+            "rows": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 12,
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 4,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16
+                }
+              }
+            }
+          },
+          "required": [
+            "head",
+            "rows"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "note"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 12
+            },
+            "lines": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 4,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            }
+          },
+          "required": [
+            "title",
+            "lines"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "agenda": {
+      "type": "object",
+      "required": [
+        "brand",
+        "title",
+        "badge",
+        "host",
+        "meta",
+        "intro",
+        "proof",
+        "agenda",
+        "cta"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "brand": {
+          "$ref": "#/$defs/brand"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "badge": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "host": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "meta": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "icon",
+              "text"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "icon": {
+                "enum": [
+                  "cal",
+                  "pin"
+                ]
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 30
+              }
+            }
+          }
+        },
+        "venue": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          }
+        },
+        "intro": {
+          "$ref": "#/$defs/agendaBlock"
+        },
+        "proof": {
+          "$ref": "#/$defs/agendaBlock"
+        },
+        "agenda": {
+          "type": "object",
+          "required": [
+            "label",
+            "tone",
+            "rows"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8
+            },
+            "tone": {
+              "enum": [
+                "blue",
+                "red",
+                "orange",
+                "yellow"
+              ]
+            },
+            "rows": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 12,
+              "items": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "time",
+                  "tone"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 24
+                  },
+                  "time": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 14
+                  },
+                  "tone": {
+                    "enum": [
+                      "blue",
+                      "red",
+                      "orange",
+                      "yellow"
+                    ]
+                  },
+                  "num": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9
+                  },
+                  "talks": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "title",
+                        "speaker",
+                        "bullets"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "tone": {
+                          "enum": [
+                            "blue",
+                            "red",
+                            "orange",
+                            "yellow"
+                          ]
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "speaker": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 20
+                        },
+                        "bullets": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 4,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 40
+                          }
+                        },
+                        "decor": {
+                          "type": "string",
+                          "maxLength": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "cta": {
+          "type": "object",
+          "required": [
+            "qr"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "qr": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "image": {
+                  "type": "string",
+                  "pattern": "^$|^data:image\\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$"
+                },
+                "seed": {
+                  "type": "integer"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 30
+                }
+              }
+            },
+            "footer": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 48
+            }
+          }
+        },
+        "exportName": {
+          "type": "string"
+        },
+        "qrGroups": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qrGroups"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "agendaBlock": {
+      "type": "object",
+      "required": [
+        "label",
+        "tone",
+        "cards"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8
+        },
+        "tone": {
+          "enum": [
+            "blue",
+            "red",
+            "orange",
+            "yellow"
+          ]
+        },
+        "callout": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "cards": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": [
+              "tone",
+              "label",
+              "icon",
+              "desc"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "tone": {
+                "enum": [
+                  "blue",
+                  "red",
+                  "orange",
+                  "yellow"
+                ]
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 12
+              },
+              "icon": {
+                "enum": [
+                  "code",
+                  "mic",
+                  "star",
+                  "check"
+                ]
+              },
+              "desc": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "foot": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        }
+      }
+    },
+    "talk": {
+      "type": "object",
+      "required": [
+        "brand",
+        "org",
+        "badge",
+        "title",
+        "subtitle",
+        "meta",
+        "lead",
+        "points",
+        "speakers",
+        "tail",
+        "qr"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "brand": {
+          "$ref": "#/$defs/brand"
+        },
+        "org": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "badge": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "badgeTone": {
+          "enum": [
+            "blue",
+            "red",
+            "orange",
+            "yellow"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "subtitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "meta": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "icon",
+              "text"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "icon": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 30
+              }
+            }
+          }
+        },
+        "lead": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "pointsTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10
+        },
+        "pointsSub": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "points": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "title",
+              "desc"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 20
+              },
+              "desc": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              }
+            }
+          }
+        },
+        "speakersTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10
+        },
+        "speakersSub": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "speakers": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "role",
+              "topic"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16
+              },
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "topic": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            }
+          }
+        },
+        "tail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "qr": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "image": {
+              "type": "string",
+              "pattern": "^$|^data:image\\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$"
+            },
+            "seed": {
+              "type": "integer"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24
+            },
+            "desc": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            }
+          }
+        },
+        "footer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 48
+        },
+        "exportName": {
+          "type": "string"
+        },
+        "qrGroups": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/qrGroups"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

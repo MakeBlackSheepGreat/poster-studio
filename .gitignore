@@ -1,0 +1,19 @@
+# 导出产物
+*.jpg
+*.png
+!docs/*.jpg
+!docs/*.png
+!docs/badges/*.svg
+
+# 临时目录
+.work/
+.tmp*/
+_qc/
+_render/
+
+# 依赖与系统文件
+node_modules/
+.DS_Store
+Thumbs.db
+*.TMP
+.*.tmpdir

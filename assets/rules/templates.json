@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "id": "promo",
+      "file": "assets/template-promo.html",
+      "label": "主视觉",
+      "use": "活动主宣传、招新、比赛预告",
+      "demo": "examples/promo.demo.json",
+      "shape": "fixed"
+    },
+    {
+      "id": "spotlight",
+      "file": "assets/template-spotlight.html",
+      "label": "卖点对话框",
+      "use": "卖点图、朋友圈传播图",
+      "demo": "examples/spotlight.demo.json",
+      "shape": "fixed"
+    },
+    {
+      "id": "long",
+      "file": "assets/template-long.html",
+      "label": "干货长图",
+      "use": "干货、流程、任务分工长图",
+      "demo": "examples/long.demo.json",
+      "shape": "flow"
+    },
+    {
+      "id": "agenda",
+      "file": "assets/template-agenda.html",
+      "label": "议程长图",
+      "use": "论坛、讲座、会议议程长图",
+      "demo": "examples/agenda.demo.json",
+      "shape": "flow"
+    },
+    {
+      "id": "talk",
+      "file": "assets/template-talk.html",
+      "label": "单场介绍图",
+      "use": "单场讲座、单场会议介绍图",
+      "demo": "examples/talk.demo.json",
+      "shape": "flow"
+    }
+  ],
+  "sectionTypes": {
+    "long": [
+      "banner",
+      "photo",
+      "card",
+      "info",
+      "timeline",
+      "table",
+      "note"
+    ]
+  }
+}

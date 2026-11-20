@@ -1,0 +1,36 @@
+{
+  "name": "poster-studio",
+  "version": "1.5.0",
+  "private": true,
+  "type": "module",
+  "description": "扁平卡通风海报生成 Agent Skill：一份 JSON 配置得到单文件 HTML 与 JPG 成品",
+  "license": "MIT",
+  "author": "MakeBlackSheepGreat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MakeBlackSheepGreat/poster-studio.git"
+  },
+  "homepage": "https://github.com/MakeBlackSheepGreat/poster-studio#readme",
+  "bugs": {
+    "url": "https://github.com/MakeBlackSheepGreat/poster-studio/issues"
+  },
+  "keywords": [
+    "poster",
+    "agent-skill",
+    "html-to-image",
+    "chinese-typography"
+  ],
+  "scripts": {
+    "validate": "node assets/validate.mjs",
+    "fix": "node assets/validate.mjs --write",
+    "build:docs": "node tools/make-badges.mjs && node tools/build-previews.mjs",
+    "check": "node assets/validate.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

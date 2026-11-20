@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "limits": {
+    "title": 12,
+    "subtitle": 20,
+    "pill": 14,
+    "line": 16,
+    "kicker": 16,
+    "dateSticker": 18,
+    "cta": 10,
+    "footer": 40,
+    "cardTitle": 10,
+    "cardDesc": 30,
+    "bullet": 40,
+    "infoValue": 24,
+    "timelineEntry": 20,
+    "tableCell": 12,
+    "badge": 18,
+    "lead": 40,
+    "pointTitle": 14,
+    "pointDesc": 30,
+    "speakerName": 12,
+    "speakerRole": 30,
+    "speakerTopic": 24,
+    "qrNote": 24,
+    "qrGroupName": 12,
+    "qrGroupDesc": 24,
+    "qrGroupTag": 12,
+    "agendaRow": 14
+  },
+  "bannedWords": [
+    "赋能",
+    "路径落地",
+    "持续复盘",
+    "收束成",
+    "闭环",
+    "抓手",
+    "势能",
+    "重磅",
+    "震撼",
+    "极致",
+    "一站式",
+    "全方位"
+  ],
+  "bannedPatterns": [
+    {
+      "id": "to-b",
+      "pattern": "把[^，。；]{1,10}转化为",
+      "why": "改写成一个具体动作"
+    },
+    {
+      "id": "empty-slogan",
+      "pattern": "引领未来|开启新篇章|共创辉煌",
+      "why": "换成具体时间、地点、动作"
+    }
+  ],
+  "datePattern": "^(0?[1-9]|1[0-2])\\s*月\\s*(0?[1-9]|[12][0-9]|3[01])\\s*日",
+  "ctaVerbs": [
+    "扫码报名",
+    "进群占位",
+    "接龙报名",
+    "填表报名",
+    "带电脑报名",
+    "转发集赞",
+    "现场签到",
+    "签到领证明",
+    "来现场提问",
+    "立即扫码进群"
+  ]
+}
