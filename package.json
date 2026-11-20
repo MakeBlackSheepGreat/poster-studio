@@ -27,7 +27,7 @@
     "check": "node assets/validate.mjs"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "devDependencies": {
     "ajv": "^8.20.0",

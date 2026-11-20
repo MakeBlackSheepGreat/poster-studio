@@ -257,7 +257,7 @@ function renderTable(columns) {
 
 const SCRIPT_DOCS = {
   "assets/validate.mjs": "校验配置结构、文案规则、模板自包含与文档一致性",
-  "assets/verify-export.mjs": "无头浏览器导出 JPG，返回溢出与文字压缩报告",
+  "assets/verify-export.mjs": "无头浏览器导出 JPG（Node 22+ 与本机 Chrome/Edge），返回溢出与文字压缩报告",
   "assets/make-qr.py": "生成真实二维码 PNG 与 data URI",
   "assets/verify-qr.py": "解码导出图里的二维码，可断言期望地址",
   "assets/qc-split.py": "长图切片降采样，便于逐段目检",

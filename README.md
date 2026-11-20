@@ -56,7 +56,7 @@ export ok: 海报.jpg
 
 `overflow` 是越界或被裁切的元素，`shrunk` 是被自动压缩字号的文字行。两个都是空数组才算过。
 
-需要本机有 Chrome 或 Edge，也可以用 `CHROME_PATH` 指定。
+需要 Node 22+ 和本机 Chrome 或 Edge；浏览器路径可以用 `CHROME_PATH` 指定。
 
 ## 模板
 
@@ -133,7 +133,7 @@ node assets/validate.mjs
 | 文件 | 作用 |
 | --- | --- |
 | `assets/validate.mjs` | 校验配置结构、文案规则、模板自包含与文档一致性 |
-| `assets/verify-export.mjs` | 无头浏览器导出 JPG，返回溢出与文字压缩报告 |
+| `assets/verify-export.mjs` | 无头浏览器导出 JPG（Node 22+ 与本机 Chrome/Edge），返回溢出与文字压缩报告 |
 | `assets/make-qr.py` | 生成真实二维码 PNG 与 data URI |
 | `assets/verify-qr.py` | 解码导出图里的二维码，可断言期望地址 |
 | `assets/qc-split.py` | 长图切片降采样，便于逐段目检 |
